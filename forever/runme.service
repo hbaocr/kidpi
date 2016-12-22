@@ -1,0 +1,17 @@
+[Unit]
+Description=Run forever check service
+After=network-online.target
+
+[Service]
+ExecStart=/home/pi/forever/runme.js
+StandardOutput=syslog
+WatchdogSec=30s
+Restart=on-failure
+StartLimitInterval=5min
+StartLimitBurst=4
+StartLimitAction=reboot-force
+
+[Install]
+WantedBy=multi-user.target
+Alias=runme.service
+
