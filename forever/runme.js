@@ -7,8 +7,12 @@ setInterval(function() {
 },1000)
 
 setInterval(function() {
-  var command = "/bin/systemd-notify WATCHDOG=1";
-  console.log("Calling in!");
+  var command = "/bin/systemd-notify --pid="+process.pid+" WATCHDOG=1";
+  console.log("Calling in! USecs:" + process.env.WATCHDOG_USEC + " PID: " + process.env.WATCHDOG_PID);
   console.log(command);
-  child_process.execFile(command);
+  var args = [
+    '--pid=' + process.pid,
+    'WATCHDOG=1'
+  ]
+  child_process.execFile('/bin/systemd-notify', args);
 },3000);
