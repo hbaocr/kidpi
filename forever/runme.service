@@ -3,14 +3,13 @@ Description=Run forever check service
 After=network-online.target
 
 [Service]
-GuessMainPID=no
 ExecStart=/usr/bin/nodejs /home/pi/kidpi/forever/runme.js
 StandardOutput=syslog
 WatchdogSec=30s
 Restart=on-failure
-#StartLimitInterval=5min
-#StartLimitBurst=4
-#StartLimitAction=reboot-force
+StartLimitInterval=5min
+StartLimitBurst=4
+StartLimitAction=reboot-force
 NotifyAccess=all
 
 [Install]
