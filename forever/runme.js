@@ -1,18 +1,31 @@
 #! /usr/bin/nodejs
 var child_process = require('child_process');
+var ping = require ("net-ping");
+const dns = require('dns');
 
 console.log("#################################### I started!");
 
 setInterval(function() {
-  var command = "/bin/systemd-notify --pid="+process.pid+" WATCHDOG=1";
-  console.log("Calling in! USecs:" + process.env.WATCHDOG_USEC + " PID: " + process.env.WATCHDOG_PID);
-  console.log(command);
-  var args = [
-    '--pid=' + process.pid,
-    'WATCHDOG=1'
-  ]
-  child_process.execFile('/bin/systemd-notify', args);
-  //child_process.execFile(command);
+  dns.lookup('google.com', (err, addresses, family) => {
+    console.log('addresses:', addresses);
+    var session = ping.createSession ();
+    session.pingHost (addresses, function (error, target) {
+      if (error)
+        console.log ("google.com: " + error.toString ());
+      else {
+        console.log ("google.com: reachable.");
+        var command = "/bin/systemd-notify --pid="+process.pid+" WATCHDOG=1";
+        console.log("Calling in! USecs:" + process.env.WATCHDOG_USEC + " PID: " + process.env.WATCHDOG_PID);
+        console.log(command);
+        var args = [
+          '--pid=' + process.pid,
+          'WATCHDOG=1'
+        ]
+        child_process.execFile('/bin/systemd-notify', args);
+        console.log (target + ": Alive");
+      }
+    });
+  });
 },10000);
 
 var net = require('net');
@@ -32,4 +45,5 @@ var unixServer = net.createServer(function(client) {
   lightplug.setPowerState(last);
   mattplug.setPowerState(last);
 });
+
 unixServer.listen('/var/run/lirc/lircrun');
