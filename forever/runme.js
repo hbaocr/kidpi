@@ -37,9 +37,9 @@ var unixServer = net.createServer(function(client) {
   console.log("Received connection!");
   
   var client = new Hs100Api.Client();
-  var lightplug = client.getPlug({host: '192.168.1.107'});
-  var fanplug = client.getPlug({host: '192.168.1.177'});
-  var mattplug = client.getPlug({host: '192.168.1.164'});
+  var lightplug = client.getPlug({host: '192.168.1.22'});
+  var fanplug = client.getPlug({host: '192.168.1.23'});
+  var mattplug = client.getPlug({host: '192.168.1.12'});
   
   last = !last;
   lightplug.setPowerState(last);
