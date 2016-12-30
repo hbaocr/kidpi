@@ -33,9 +33,11 @@ var Hs100Api = require('hs100-api');
 var last = true;
 
 // This server listens on a Unix socket at /var/run/mysocket
-var unixServer = net.createServer(function(client) {
+var unixServer = net.createServer(function(socketClient) {
   console.log("Received connection!");
-  
+  socketClient.on("data", (data) => {
+    console.log("Received: " + data);
+  });
   var client = new Hs100Api.Client();
   var lightplug = client.getPlug({host: '192.168.1.22'});
   var fanplug = client.getPlug({host: '192.168.1.23'});
