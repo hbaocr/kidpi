@@ -1,0 +1,109 @@
+#!/usr/bin/python2
+import os
+import sys
+import urllib2
+import pytz
+
+from PIL import Image
+from PIL import ImageDraw
+from PIL import ImageFont
+from datetime import datetime
+import time
+from papirus import Papirus
+
+user = os.getuid()
+if user != 0:
+    print "Please run script as root"
+    sys.exit()
+    
+WHITE = 1
+BLACK = 0
+
+# fonts are in different places on Raspbian/Angstrom so search
+possible_fonts = [
+    '/usr/share/fonts/truetype/ttf-dejavu/DejaVuSansMono-Bold.ttf',   # R.Pi
+    '/usr/share/fonts/truetype/freefont/FreeMono.ttf',                # R.Pi
+    '/usr/share/fonts/truetype/LiberationMono-Bold.ttf',              # B.B
+    '/usr/share/fonts/truetype/DejaVuSansMono-Bold.ttf',              # B.B
+    '/usr/share/fonts/TTF/FreeMonoBold.ttf',                          # Arch
+    '/usr/share/fonts/TTF/DejaVuSans-Bold.ttf'                        # Arch
+]
+
+
+FONT_FILE = ''
+for f in possible_fonts:
+    if os.path.exists(f):
+        FONT_FILE = f
+        break
+
+if '' == FONT_FILE:
+    raise 'no font file found'
+
+CLOCK_FONT_SIZE = 35
+DATE_FONT_SIZE  = 30
+
+MAX_START = 0xffff
+
+def main(argv):
+    """main program - draw and display a test image"""
+
+    papirus = Papirus()
+
+    print('panel = {p:s} {w:d} x {h:d}  version={v:s} COG={g:d} FILM={f:d}'.format(p=papirus.panel, w=papirus.width, h=papirus.height, v=papirus.version, g=papirus.cog, f=papirus.film))
+
+    papirus.clear()
+
+    drawWith(papirus)
+
+
+def drawWith(papirus):
+    """simple partial update demo - draw draw a clock"""
+
+    # initially set all white background
+    image = Image.new('1', papirus.size, WHITE)
+
+    # prepare for drawing
+    draw = ImageDraw.Draw(image)
+    width, height = image.size
+
+    clock_font = ImageFont.truetype(FONT_FILE, CLOCK_FONT_SIZE)
+    date_font = ImageFont.truetype(FONT_FILE, DATE_FONT_SIZE)
+
+    # clear the display buffer
+    draw.rectangle((0, 0, width, height), fill=WHITE, outline=WHITE)
+    previous_second = 0
+    previous_day = 0
+
+    while True:
+        while True:
+            now = datetime.now(pytz.timezone("US/Pacific"))
+            if now.second % 5 == 0:
+                break
+            time.sleep(0.5)
+
+        btc = urllib2.urlopen("https://theamackers.com/btc/account?op=price").read()
+        family = urllib2.urlopen("https://theamackers.com/btc/account?op=bal&kid=family").read()
+
+        draw.rectangle((2, 2, width - 2, height - 2), fill=WHITE, outline=BLACK)
+        draw.text((10, 55), ('{m:02d}-{d:02d}/' + family).format(y=now.year, m=now.month, d=now.day), fill=BLACK, font=date_font)
+
+        draw.text((5, 10), ('{h:02d}:{m:02d}/' + btc).format(h=now.hour % 12, m=now.minute), fill=BLACK, font=clock_font)
+
+        # display image on the panel
+        papirus.display(image)
+        if now.second < previous_second:
+            papirus.update()    # full update every minute
+        else:
+            papirus.partial_update()
+        previous_second = now.second
+
+# main
+if "__main__" == __name__:
+    if len(sys.argv) < 1:
+        sys.exit('usage: {p:s}'.format(p=sys.argv[0]))
+
+    try:
+        main(sys.argv[1:])
+    except KeyboardInterrupt:
+        sys.exit('interrupted')
+        pass
