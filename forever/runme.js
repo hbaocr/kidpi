@@ -28,9 +28,13 @@ setInterval(function() {
     });
   });
   
-  https.get('https://theamackers.com/storeip', (res) => {
-    console.log("Stored ip address.");
-  });
+  try {
+    https.get('https://theamackers.com/storeip', (res) => {
+      console.log("Stored ip address.");
+    });
+  } catch (ex) {
+    console.log(ex);
+  }
 
 },10000);
 
