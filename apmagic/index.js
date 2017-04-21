@@ -17,6 +17,11 @@ function ifconfig(interface, addressType, address, callback) {
   exec('ifconfig ' + interface + " "+ addressType + " " + address, callback);
 }
 
+function iptables(interface, flagString, callback) {
+  var command = 'iptables -o ' + interface + " " + flagString;
+  exec(command, callback);
+}
+
 function hostapd(options, callback) {
   var commands = [];
   var defaultOptions = {
@@ -84,6 +89,19 @@ function dnsmasq(options, callback) {
     }
   });
 }
+
+function trafficForwarding(callback) {
+  fs.open('/proc/sys/net/ipv4/ip_forward', 'w', (err, fd) => {
+    if (err) throw err;
+
+    fs.write(fd, '1');
+    console.log('ip_forward flag written.');
+
+    iptables('eth0', '-t nat -A POSTROUTING -j MASQUERADE');
+    iptables('wlan0', '-t nat -A FORWARD -i eth0 -m state --start RELATED,ESTABLISHED -j ACCEPT');
+    iptables('eth0', '-A FORWARD -i wlan0 -j ACCEPT', callback);
+  });
+}
   
   
 
@@ -110,34 +128,10 @@ myEmitter.on('ipconfigured', () => {
     console.log("Done setting up hostap.");
     dnsmasq({}, () => {
       console.log("Done setting up dnsmasq.");
+      trafficForwarding(() => {
+        console.log("Traffic forwarding setup.");
+      });
     });
   });
 });
-
-
-  /*
-  var options = {
-    channel: 6,
-    hw_mode: 'g',
-    interface: 'wlan0',
-    ssid: 'RaspberryPI',
-    wpa:2,
-    wpa_passphrase: 'raspberry'
-  };
-
-  hostapd.enable(options, (err) => {
-    if (err) {
-      console.log("Error seen: ", err);
-    } else {
-      console.log("No error AP should be running.");
-    }
-
-    ifconfig.up({interface: 'wlan0'}, (err) => {
-      console.log("Ifconfig bring up erro?", err);
-    });
-  });
-  */
-//});
-
-
 
