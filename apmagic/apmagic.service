@@ -1,0 +1,13 @@
+[Unit]
+Description=AP Service for PI
+After=network-online.target
+
+[Service]
+ExecStart=/usr/bin/nodejs /home/pi/kidpi/apmagic/index.js
+StandardOutput=syslog
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+Alias=apmagic.service
+
