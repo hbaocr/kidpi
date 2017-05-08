@@ -31,7 +31,7 @@ function hostapd(options, callback) {
     interface:'wlan0',
     ssid:'MattWuzHere',
     wpa:'2',
-    wpa_passphrase:'roadrunner'
+    wpa_passphrase:'easypeazie'
   }
 
   const finalOptions = Object.assign(options, defaultOptions);
