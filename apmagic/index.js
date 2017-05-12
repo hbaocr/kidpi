@@ -86,7 +86,10 @@ function createAccessPoint() {
   });
 
   myEmitter.on('ipconfigured', () => {
-    APExecs.hostapd({}, () => {
+    APExecs.hostapd({
+        ssid: "MattWuzHere',
+        password: 'easypeazie'
+      }, () => {
       console.log("Done setting up hostap.");
       APExecs.dnsmasq({}, () => {
         console.log("Done setting up dnsmasq.");
