@@ -67,6 +67,7 @@ function trafficForwarding(callback) {
 // callbacks and events.  Events help you pop the stack on
 // deep callback hell.
 function createAccessPoint() {  
+
   APExecs.takeDown('wlan0', (err) => {
     console.log("Trying to bring down wlan.  Err?", err);
     myEmitter.emit('down');
@@ -87,7 +88,7 @@ function createAccessPoint() {
 
   myEmitter.on('ipconfigured', () => {
     APExecs.hostapd({
-        ssid: "MattWuzHere',
+        ssid: 'MattWuzHere',
         password: 'easypeazie'
       }, () => {
       console.log("Done setting up hostap.");
@@ -99,6 +100,13 @@ function createAccessPoint() {
       });
     });
   });
+}
+
+
+// First make sure we have the required SUDO access:
+var uid = parseInt(process.env.SUDO_UID);
+if (!uid) {
+  throw new Error("Whoops!  This has to be run with SUDO access.");
 }
 
 // Make sure everything in the network stack is settled
