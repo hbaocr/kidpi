@@ -49,7 +49,7 @@ class APExecs {
     }
    
     Object.getOwnPropertyNames(finalOptions).forEach(function(key) {
-      commands.push(key + '=' + options[key]);
+      commands.push(key + '=' + finalOptions[key]);
     });
 
     // The tmp package does nice things for you, like creating a tmp file in the proper
