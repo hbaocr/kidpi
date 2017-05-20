@@ -16,4 +16,4 @@ sleep 5s
 echo "Done copy"
 sudo cp -R lib/* /usr/lib/
 
-sudo apt-get update && sudo apt-get upgrade
+sudo apt-get update -y && sudo apt-get upgrade -y
