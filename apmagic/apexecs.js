@@ -42,7 +42,7 @@ class APExecs {
       wpa_passphrase:'easypeazie' // <--- This is going to be the AP's password.
     }
 
-    var finalOptions = Object.assign(options, defaultOptions);
+    var finalOptions = Object.assign(defaultOptions, options);
     if (options.password) {
       finalOptions.wpa_passphrase = finalOptions.password;
       delete finalOptions.password;
