@@ -82,7 +82,7 @@ def drawWith(papirus):
             time.sleep(0.5)
 
         btc = urllib2.urlopen("https://theamackers.com/btc/account?op=price").read()
-        family = urllib2.urlopen("https://theamackers.com/btc/account?op=bal&kid=family").read()
+        family = 0
 
         draw.rectangle((2, 2, width - 2, height - 2), fill=WHITE, outline=BLACK)
         draw.text((10, 55), ('{m:02d}-{d:02d}/' + str(int(round(float(family))))).format(y=now.year, m=now.month, d=now.day), fill=BLACK, font=date_font)
