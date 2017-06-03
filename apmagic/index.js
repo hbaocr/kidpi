@@ -83,7 +83,10 @@ function createAccessPoint() {
         console.log("Err setting the broadcast address?", err);
         APExecs.ifconfig(hostInterface, 'netmask', '255.255.255.0', (err) => {
           console.log("Err setting the mask address?", err);
-          myEmitter.emit('ipconfigured');
+          APExecs.ifconfig(hostInterface, 'network', '172.24.1.0', (err) => {
+            console.log("Err setting the network?", err);
+            myEmitter.emit('ipconfigured');
+          });
         });
       });
     });
