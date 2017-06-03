@@ -3,8 +3,8 @@
  * specifically to get a Raspberry PI to work as a Wifi Router.
  *
  * This program assumes it will re-run repeatedly on boot.  It makes use 
- * of ephemeral settings and configurations.  It also takes down wlan0
- * at its start.
+ * of ephemeral settings and configurations.  It also takes down the host
+ * interface at its start.
  * 
  * There is a sister systemd service file, that can be used to ensure
  * it comes up at start.
@@ -12,9 +12,9 @@
  * Dependancies: dnsmasq hostapd iptables
  * Example: sudo apt-get install -y dnsmasq hostapd iptables
  * 
- * Assumptions: The PI is plugged into a hardwired (eth0) internet 
- * connection, that allows it to be accessed even if the wifi is 
- * botched.  Make sure you have the pi connected to a decent 
+ * Assumptions: The PI has two interfaces.  Host that will be the
+ * wifi part, and another interface that is the internet 
+ * connection.  Make sure you have the pi connected to a decent 
  * power supply too.
  *
  * To run: 
@@ -53,13 +53,13 @@ function trafficForwarding(callback) {
     // So I used the event emitter to organize them.
     APExecs.iptables(gateInterface, '-t nat -A POSTROUTING -j MASQUERADE', () => {myEmitter.emit('gatesetup')});
 
-    // Takes care of forwarding the traffic from wlan0 to eth0
+    // Takes care of forwarding the traffic from host to gate
     myEmitter.on('gatesetup', () => {
       APExecs.iptables(hostInterface, '-t nat -A FORWARD -i ' + gateInterface + ' -m state --start RELATED,ESTABLISHED -j ACCEPT');
       myEmitter.emit('forwardingSetup');
     });
 
-    // Makes sure the responses coming to eth0 make it through to wlan0
+    // Makes sure the responses coming to gate make it through to host
     myEmitter.on('forwardingSetup', () => {
       APExecs.iptables(gateInterface, '-A FORWARD -i ' + hostInterface + ' -j ACCEPT', callback);
     });
@@ -72,7 +72,7 @@ function trafficForwarding(callback) {
 function createAccessPoint() {  
 
   APExecs.takeDown(hostInterface, (err) => {
-    console.log("Trying to bring down wlan.  Err?", err);
+    console.log("Trying to bring down " + hostInterface + ".  Err?", err);
     myEmitter.emit('down');
   });
 
@@ -103,13 +103,6 @@ function createAccessPoint() {
       });
     });
   });
-}
-
-
-// First make sure we have the required SUDO access:
-var uid = parseInt(process.env.SUDO_UID);
-if (!uid) {
-  throw new Error("Whoops!  This has to be run with SUDO access.");
 }
 
 // Make sure everything in the network stack is settled
