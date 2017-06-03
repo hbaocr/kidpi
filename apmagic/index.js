@@ -32,6 +32,9 @@ var exec = child_process.exec;
 var fs = require('fs');
 var tmp = require('tmp');
 
+const hostInterface = 'wlan0';  // The WiFi Access Device.
+const gateInterface = 'eth0';  // The interface connected to the internet.
+
 const APExecs = require('./apexecs.js');
 const EventEmitter = require('events');
 class MyEmitter extends EventEmitter {}
@@ -48,17 +51,17 @@ function trafficForwarding(callback) {
 
     // Note, iptables does not like being blated with several rules instantaneously.
     // So I used the event emitter to organize them.
-    APExecs.iptables('eth0', '-t nat -A POSTROUTING -j MASQUERADE', () => {myEmitter.emit('eth0setup')});
+    APExecs.iptables(gateInterface, '-t nat -A POSTROUTING -j MASQUERADE', () => {myEmitter.emit('gatesetup')});
 
     // Takes care of forwarding the traffic from wlan0 to eth0
-    myEmitter.on('eth0setup', () => {
-      APExecs.iptables('wlan0', '-t nat -A FORWARD -i eth0 -m state --start RELATED,ESTABLISHED -j ACCEPT');
+    myEmitter.on('gatesetup', () => {
+      APExecs.iptables(hostInterface, '-t nat -A FORWARD -i ' + gateInterface + ' -m state --start RELATED,ESTABLISHED -j ACCEPT');
       myEmitter.emit('forwardingSetup');
     });
 
     // Makes sure the responses coming to eth0 make it through to wlan0
     myEmitter.on('forwardingSetup', () => {
-      APExecs.iptables('eth0', '-A FORWARD -i wlan0 -j ACCEPT', callback);
+      APExecs.iptables(gateInterface, '-A FORWARD -i ' + hostInterface + ' -j ACCEPT', callback);
     });
   });
 }
@@ -68,17 +71,17 @@ function trafficForwarding(callback) {
 // deep callback hell.
 function createAccessPoint() {  
 
-  APExecs.takeDown('wlan0', (err) => {
+  APExecs.takeDown(hostInterface, (err) => {
     console.log("Trying to bring down wlan.  Err?", err);
     myEmitter.emit('down');
   });
 
   myEmitter.on('down', () => {
-    APExecs.ifconfig('wlan0', 'inet', '172.24.1.1', (err) => {
+    APExecs.ifconfig(hostInterface, 'inet', '172.24.1.1', (err) => {
       console.log("Err setting the ip address?", err);
-      APExecs.ifconfig('wlan0', 'broadcast', '172.24.1.255', (err) => {
+      APExecs.ifconfig(hostInterface, 'broadcast', '172.24.1.255', (err) => {
         console.log("Err setting the broadcast address?", err);
-        APExecs.ifconfig('wlan0', 'netmask', '255.255.255.0', (err) => {
+        APExecs.ifconfig(hostInterface, 'netmask', '255.255.255.0', (err) => {
           console.log("Err setting the mask address?", err);
           myEmitter.emit('ipconfigured');
         });
