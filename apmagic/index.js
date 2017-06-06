@@ -100,7 +100,7 @@ function createAccessPoint() {
       console.log("Done setting up hostap.");
       APExecs.dnsmasq({interface:hostInterface}, () => {
         console.log("Done setting up dnsmasq.");
-        APExecs.trafficForwarding(() => {
+        trafficForwarding(() => {
           console.log("Traffic forwarding setup.");
         });
       });
