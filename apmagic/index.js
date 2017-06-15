@@ -33,7 +33,7 @@ var fs = require('fs');
 var tmp = require('tmp');
 
 const hostInterface = 'wlan0';  // The WiFi Access Device.
-const gateInterface = 'eth0';  // The interface connected to the internet.
+const gateInterface = 'wlan1';  // The interface connected to the internet.
 
 const APExecs = require('./apexecs.js');
 const EventEmitter = require('events');
@@ -83,10 +83,7 @@ function createAccessPoint() {
         console.log("Err setting the broadcast address?", err);
         APExecs.ifconfig(hostInterface, 'netmask', '255.255.255.0', (err) => {
           console.log("Err setting the mask address?", err);
-          APExecs.ifconfig(hostInterface, 'network', '172.24.1.0', (err) => {
-            console.log("Err setting the network?", err);
-            myEmitter.emit('ipconfigured');
-          });
+          myEmitter.emit('ipconfigured');
         });
       });
     });
@@ -94,13 +91,13 @@ function createAccessPoint() {
 
   myEmitter.on('ipconfigured', () => {
     APExecs.hostapd({
-        ssid: 'MattWuzHere',
-        password: 'easypeazie'
+        ssid: 'matts-macback',
+        password: 'monkeybutt'
       }, () => {
       console.log("Done setting up hostap.");
       APExecs.dnsmasq({interface:hostInterface}, () => {
         console.log("Done setting up dnsmasq.");
-        APExecs.trafficForwarding(() => {
+        trafficForwarding(() => {
           console.log("Traffic forwarding setup.");
         });
       });
@@ -113,3 +110,5 @@ function createAccessPoint() {
 console.log("Waiting 30 seconds while everything else comes up...");
 setTimeout(createAccessPoint, 30000);
 
+// Or process has to stay up, or all children will be killed.
+setInterval(() => { console.log("Hostap running..."); }, 30000);
