@@ -33,7 +33,7 @@ var fs = require('fs');
 var tmp = require('tmp');
 
 const hostInterface = 'wlan0';  // The WiFi Access Device.
-const gateInterface = 'wlan1';  // The interface connected to the internet.
+const gateInterface = 'eth0';  // The interface connected to the internet.
 
 const APExecs = require('./apexecs.js');
 const EventEmitter = require('events');
@@ -91,8 +91,8 @@ function createAccessPoint() {
 
   myEmitter.on('ipconfigured', () => {
     APExecs.hostapd({
-        ssid: 'matts-macback',
-        password: 'monkeybutt'
+        ssid: 'MattWuzHere',
+        password: 'easypeasy'
       }, () => {
       console.log("Done setting up hostap.");
       APExecs.dnsmasq({interface:hostInterface}, () => {
