@@ -83,10 +83,7 @@ function createAccessPoint() {
         console.log("Err setting the broadcast address?", err);
         APExecs.ifconfig(hostInterface, 'netmask', '255.255.255.0', (err) => {
           console.log("Err setting the mask address?", err);
-          APExecs.ifconfig(hostInterface, 'network', '172.24.1.0', (err) => {
-            console.log("Err setting the network?", err);
-            myEmitter.emit('ipconfigured');
-          });
+          myEmitter.emit('ipconfigured');
         });
       });
     });
@@ -95,7 +92,7 @@ function createAccessPoint() {
   myEmitter.on('ipconfigured', () => {
     APExecs.hostapd({
         ssid: 'MattWuzHere',
-        password: 'easypeazie'
+        password: 'easypeasy'
       }, () => {
       console.log("Done setting up hostap.");
       APExecs.dnsmasq({interface:hostInterface}, () => {
@@ -113,3 +110,5 @@ function createAccessPoint() {
 console.log("Waiting 30 seconds while everything else comes up...");
 setTimeout(createAccessPoint, 30000);
 
+// Or process has to stay up, or all children will be killed.
+setInterval(() => { console.log("Hostap running..."); }, 30000);
