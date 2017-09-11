@@ -1,0 +1,12 @@
+[Unit]
+Description=Run forever lirc service.
+After=network-online.target
+
+[Service]
+ExecStart=/usr/bin/nodejs /home/pi/kidpi/lirc/index.js
+StandardOutput=syslog
+
+[Install]
+WantedBy=multi-user.target
+Alias=lirc.service
+

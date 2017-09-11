@@ -1,0 +1,6 @@
+begin
+ prog = irexec
+ remote = /etc/lirc/own_remote.conf
+ button = 
+ config = echo "You just pressed 'OK'!" > /var/run/lircrcoutput
+end
