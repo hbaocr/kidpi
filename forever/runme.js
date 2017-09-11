@@ -1,6 +1,7 @@
 #! /usr/bin/nodejs
 var child_process = require('child_process');
 var ping = require ("net-ping");
+var https = require ("https");
 const dns = require('dns');
 
 console.log("#################################### I started!");
@@ -26,26 +27,14 @@ setInterval(function() {
       }
     });
   });
+  
+  try {
+    https.get('https://theamackers.com/storeip', (res) => {
+      console.log("Stored ip address.");
+    });
+  } catch (ex) {
+    console.log(ex);
+  }
+
 },10000);
 
-var net = require('net');
-var Hs100Api = require('hs100-api');
-var last = true;
-
-// This server listens on a Unix socket at /var/run/mysocket
-var unixServer = net.createServer(function(socketClient) {
-  console.log("Received connection!");
-  socketClient.on("data", (data) => {
-    console.log("Received: " + data);
-  });
-  var client = new Hs100Api.Client();
-  var lightplug = client.getPlug({host: '192.168.1.22'});
-  var fanplug = client.getPlug({host: '192.168.1.23'});
-  var mattplug = client.getPlug({host: '192.168.1.12'});
-  
-  last = !last;
-  lightplug.setPowerState(last);
-  mattplug.setPowerState(last);
-});
-
-unixServer.listen('/var/run/lirc/lircrun');
