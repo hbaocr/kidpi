@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "hs100-api": "^0.3.0",
-    "net-ping": "^1.2.0"
+    "net-ping": "^1.2.0",
+    "rpi-gpio": "^0.8.1"
   }
 }
