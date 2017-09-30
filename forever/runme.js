@@ -3,8 +3,29 @@ var child_process = require('child_process');
 var ping = require ("net-ping");
 var https = require ("https");
 const dns = require('dns');
+var gpio = require('rpi-gpio');
+gpio.setMode(gpio.MODE_BCM);
 
 console.log("#################################### I started!");
+
+var lampPin = 21;
+function pinBlink() {
+ gpio.write(lampPin, true, (err) => {
+   if (err) {
+     console.log("Error in setting gpio pin.",err);
+     return;
+   }
+ 
+   setTimeout(() => {
+     gpio.write(lampPin, false, (err) => {
+       if (err) {
+         console.log("Error in setting gpio pin.",err);
+         return;
+       }
+     });
+   }, 200);
+ });
+}
 
 setInterval(function() {
   dns.lookup('google.com', (err, addresses, family) => {
@@ -24,17 +45,10 @@ setInterval(function() {
         ]
         child_process.execFile('/bin/systemd-notify', args);
         console.log (target + ": Alive");
+	pinBlink();
       }
     });
   });
-  
-  try {
-    https.get('https://theamackers.com/storeip', (res) => {
-      console.log("Stored ip address.");
-    });
-  } catch (ex) {
-    console.log(ex);
-  }
-
 },10000);
 
+gpio.setup(lampPin, gpio.DIR_OUT, () => {});
