@@ -4,7 +4,7 @@ var socket = io.connect('theamackers.com', {reconnect: true});
 var player = require('play-sound')(opts = {})
 
 function playChime() {
-  player.play("alert.mp3");
+  player.play("/home/pi/kidpi/audio/alert.mp3");
 }
 
 // Add a connect listener

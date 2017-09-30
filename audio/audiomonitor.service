@@ -1,0 +1,13 @@
+[Unit]
+Description=Run Server for keeping an Eye on theAmackers.com
+After=network-online.target
+
+[Service]
+ExecStart=/usr/bin/nodejs /home/pi/kidpi/audio/index.js
+StandardOutput=syslog
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+Alias=audiomonitor.service
+
