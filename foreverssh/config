@@ -1,0 +1,6 @@
+host ec2-jump
+    hostname ec2-35-164-124-198.us-west-2.compute.amazonaws.com
+    identityFile ~/.ssh/mattamackerpublic.pem
+    user ec2-user
+    ServerAliveInterval 60
+    remoteforward 2700 localhost:22
