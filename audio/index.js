@@ -7,6 +7,15 @@ function playChime() {
   player.play("/home/pi/kidpi/audio/alert.mp3");
 }
 
+function playEmergency() {
+  for (var i = 0; i < 5; i++) {
+    setTimeout(() => {
+      console.log("Playing alarm.");
+      player.play("/home/pi/kidpi/audio/emergency.mp3");
+    }, 3200 + (i * 8000))
+  }
+}
+
 // Add a connect listener
 socket.on('connect', function(socket) { 
   console.log('Connected!');
@@ -49,6 +58,11 @@ socket.on('msg', function(dataString) {
 
 socket.on('audiomsg', function(dataString) {
   playChime();
+});
+
+socket.on('emergency', function(dataString) {
+  console.log("Received emergency alert.");
+  playEmergency();
 });
 
 
