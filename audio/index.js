@@ -54,6 +54,11 @@ socket.on('alive', function(data) {
 
 socket.on('msg', function(dataString) {
   playChime();
+  console.log("Msg received:", dataString);
+  if (dataString.msg.match(/restart weasley/)) {
+    const { spawn } = require('child_process');
+    const child = spawn('reboot');
+  }
 });
 
 socket.on('audiomsg', function(dataString) {
