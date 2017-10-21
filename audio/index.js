@@ -58,6 +58,25 @@ socket.on('msg', function(dataString) {
 
 socket.on('audiomsg', function(dataString) {
   playChime();
+  console.log(dataString.src)
+  var https = require('https');
+  var fs = require('fs');
+
+  var file = fs.createWriteStream(__dirname + "/file.wav");
+  console.log("File location.: " + __dirname + "/file.wav");
+  var request = https.get("https://theamackers.com" + dataString.src, function(response) {
+      response.pipe(file);
+      response.on("end", () => {
+        setTimeout(() => {
+          console.log("Audio file written.");
+          const { spawn } = require('child_process');
+          const child = spawn('aplay', [__dirname + "/file.wav"]);
+          child.stderr.on('data', (data) => {
+              console.log(`stderr: ${data}`);
+          });
+        }, 1000);
+      });
+  });
 });
 
 socket.on('emergency', function(dataString) {
