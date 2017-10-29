@@ -1,0 +1,13 @@
+[Unit]
+Description=Run forever ssh tunnel
+After=network-online.target
+
+[Service]
+User=pi
+ExecStart=/usr/bin/ssh -NT -o ExitOnForwardFailure=yes ec2-jump
+RestartSec=5
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
