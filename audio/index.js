@@ -32,7 +32,9 @@ socket.on('alive', function(data) {
     // If someone other than us is online.  Keep track of that
     // and play an audio chime for anyone new.
     if (peopleOnline[data[i]] == null) {
-      playChime();
+      if (data[i] != "mamacker" && data[i] != "cintar" && data[i] != "cintar2" && data[i] != "crintar2") {
+        playChime();
+      }
       console.log("Newly online: " + data[i]);
     }
 
@@ -53,7 +55,14 @@ socket.on('alive', function(data) {
 });
 
 socket.on('msg', function(dataString) {
-  playChime();
+  if (dataString.msg.match(/steam/i)) {
+    return;
+  }
+
+  if (!msg.silenced) {
+    playChime();
+  }
+
   console.log("Msg received:", dataString);
   if (dataString.msg.match(/restart weasley/)) {
     const { spawn } = require('child_process');
