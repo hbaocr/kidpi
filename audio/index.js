@@ -7,6 +7,15 @@ function playChime() {
   player.play("/home/pi/kidpi/audio/alert.mp3");
 }
 
+function playEmergency() {
+  for (var i = 0; i < 5; i++) {
+    setTimeout(() => {
+      console.log("Playing alarm.");
+      player.play("/home/pi/kidpi/audio/emergency.mp3");
+    }, 3200 + (i * 8000))
+  }
+}
+
 // Add a connect listener
 socket.on('connect', function(socket) { 
   console.log('Connected!');
@@ -23,7 +32,9 @@ socket.on('alive', function(data) {
     // If someone other than us is online.  Keep track of that
     // and play an audio chime for anyone new.
     if (peopleOnline[data[i]] == null) {
-      playChime();
+      if (data[i] != "mamacker" && data[i] != "cintar" && data[i] != "cintar2" && data[i] != "crintar2") {
+        playChime();
+      }
       console.log("Newly online: " + data[i]);
     }
 
@@ -44,11 +55,47 @@ socket.on('alive', function(data) {
 });
 
 socket.on('msg', function(dataString) {
-  playChime();
+  if (dataString.msg.match(/steam/i)) {
+    return;
+  }
+
+  if (!msg.silenced) {
+    playChime();
+  }
+
+  console.log("Msg received:", dataString);
+  if (dataString.msg.match(/restart weasley/)) {
+    const { spawn } = require('child_process');
+    const child = spawn('reboot');
+  }
 });
 
 socket.on('audiomsg', function(dataString) {
   playChime();
+  console.log(dataString.src)
+  var https = require('https');
+  var fs = require('fs');
+
+  var file = fs.createWriteStream(__dirname + "/file.wav");
+  console.log("File location.: " + __dirname + "/file.wav");
+  var request = https.get("https://theamackers.com" + dataString.src, function(response) {
+      response.pipe(file);
+      response.on("end", () => {
+        setTimeout(() => {
+          console.log("Audio file written.");
+          const { spawn } = require('child_process');
+          const child = spawn('aplay', [__dirname + "/file.wav"]);
+          child.stderr.on('data', (data) => {
+              console.log(`stderr: ${data}`);
+          });
+        }, 1000);
+      });
+  });
+});
+
+socket.on('emergency', function(dataString) {
+  console.log("Received emergency alert.");
+  playEmergency();
 });
 
 

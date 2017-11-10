@@ -51,3 +51,15 @@ nnoremap <F1> <ESC>
 vnoremap <F1> <ESC>
 set omnifunc=ft-javascropt-omni
 syntax on
+
+filetype plugin indent on
+autocmd FileType python setlocal tabstop=8 expandtab shiftwidth=4 softtabstop=4
+autocmd FileType cpp setlocal tabstop=8 expandtab shiftwidth=2 softtabstop=2
+autocmd FileType c setlocal tabstop=8 expandtab shiftwidth=2 softtabstop=2
+autocmd FileType javascript setlocal tabstop=8 expandtab shiftwidth=2 softtabstop=2
+autocmd FileType html setlocal tabstop=8 expandtab shiftwidth=2 softtabstop=2
+autocmd FileType ruby setlocal tabstop=8 expandtab shiftwidth=4 softtabstop=4
+autocmd FileType yaml setlocal tabstop=8 expandtab shiftwidth=2 softtabstop=2
+highlight ExtraWhitespace ctermbg=red guibg=red
+autocmd Syntax * syn match ExtraWhitespace /\s\+$\| \+\ze\t/
+

@@ -5,7 +5,7 @@ After=network-online.target
 [Service]
 ExecStart=/usr/bin/nodejs /home/pi/kidpi/forever/runme.js
 StandardOutput=syslog
-WatchdogSec=30s
+WatchdogSec=60s
 Restart=on-failure
 StartLimitInterval=5min
 StartLimitBurst=4
