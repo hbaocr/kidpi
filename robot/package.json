@@ -9,7 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
     "pigpio": "^0.6.3",
-    "serialport": "^6.0.4"
+    "serialport": "^6.0.4",
+    "socket.io": "^2.0.4"
   }
 }

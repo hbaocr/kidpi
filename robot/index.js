@@ -1,7 +1,20 @@
 var Gpio = require('pigpio').Gpio,
-    motor = new Gpio(18, {mode: Gpio.OUTPUT}),
-    pulseWidth = 100,
-    increment = 1;
+    motor = new Gpio(18, {mode: Gpio.OUTPUT});
+
+var SerialPort = require('serialport');
+var port = new SerialPort('/dev/ttyAMA0', {
+  baudRate: 19200
+});
+
+const motors = {
+  front: 0x02,
+  back: 0x04,
+}
+
+const direction = {
+  forward: 0x00,
+  backward: 0x01,
+}
 
 var A1 = new Gpio(21, {mode: Gpio.OUTPUT});
 var A2 = new Gpio(16, {mode: Gpio.OUTPUT});
@@ -22,6 +35,15 @@ function turnRight(howFar) {
   motor.pwmWrite(howFar);
 }
 
+var rightTimer = null;
+function rightMoment() {
+  clearTimeout(rightTimer);
+  turnRight(255);
+  rightTimer = setTimeout(() => {
+    goStraight(0);
+  }, 300);
+}
+
 function turnLeft(howFar) {
   console.log("Turning left: ", howFar);
   enable.digitalWrite(1);
@@ -35,24 +57,18 @@ function turnLeft(howFar) {
   motor.pwmWrite(howFar);
 }
 
+var leftTimer = null;
+function leftMoment() {
+  clearTimeout(leftTimer);
+  turnLeft(255);
+  leftTimer = setTimeout(() => {
+    goStraight(0);
+  }, 300);
+}
+
 function goStraight() {
   console.log("Not turning! ");
   enable.digitalWrite(0);
-}
-
-var SerialPort = require('serialport');
-var port = new SerialPort('/dev/ttyAMA0', {
-  baudRate: 19200
-});
-
-const motors = {
-  front: 0x02,
-  back: 0x04,
-}
-
-const direction = {
-  forward: 0x01,
-  backward: 0x00,
 }
 
 function fullStop() {
@@ -66,20 +82,38 @@ function fullStop() {
 
 function goForward(speed) {
   var command = direction.forward | motors.front;
-  console.log("Going forward.", command);
+  console.log("Going forward.", command, speed);
   port.write(new Buffer([0x80, 0, command, speed]), function(err, results) {});
   command = direction.forward | motors.back;
-  console.log("Going forward.", command);
+  console.log("Going forward.", command, speed);
   port.write(new Buffer([0x80, 0, command, speed]), function(err, results) {});
+}
+
+let forwardTimer = null;
+function forwardMoment() {
+  clearTimeout(forwardTimer);
+  goForward(127);
+  forwardTimer = setTimeout(() => {
+    goForward(0);
+  }, 300);
 }
 
 function goBackward(speed) {
   var command = direction.backward | motors.front;
-  console.log("Going backward.", command);
+  console.log("Going backward.", command, speed);
   port.write(new Buffer([0x80, 0, command, speed]), function(err, results) {});
   command = direction.backward | motors.back;
-  console.log("Going backward.", command);
+  console.log("Going backward.", command, speed);
   port.write(new Buffer([0x80, 0, command, speed]), function(err, results) {});
+}
+
+let backwardTimer = null;
+function backwardMoment() {
+  clearTimeout(backwardTimer);
+  goBackward(127);
+  backwardTimer = setTimeout(() => {
+    goBackward(0);
+  }, 300);
 }
 
 port.on("open", () => {
@@ -133,13 +167,38 @@ function turningRoutine() {
 
 fullStop();
 goStraight();
-/*
-main();
-turningRoutine();
-*/
 
-//
-port.on("error", (err) => {
-  console.log("Something happened!!!", err);
+var express = require('express');
+var app = express();
+var http = require('http');
+var httpServer = http.Server(app);
+var sio = require('socket.io');
+var fs = require('fs');
+var bodyParser = require('body-parser');
+
+var io = sio(httpServer);
+httpServer.listen(80);
+
+function handleSocket(socket) {
+  socket.on('msg', (data) => {
+    console.log(data);
+    switch(data) {
+      case 'f': forwardMoment(); break;
+      case 'b': backwardMoment(); break;
+      case 's': fullStop(); break;
+      case 'r': rightMoment(); break;
+      case 'l': leftMoment(); break;
+    }
+  });
+}
+io.on('connection', handleSocket);
+
+app.use(express.static(__dirname + '/static/'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+
+app.get('/', function(req, res){
+    res.sendfile('/static/index.html');
 });
-
