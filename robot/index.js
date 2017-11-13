@@ -133,10 +133,13 @@ function turningRoutine() {
 
 fullStop();
 goStraight();
+/*
 main();
 turningRoutine();
+*/
 
 //
 port.on("error", (err) => {
   console.log("Something happened!!!", err);
 });
+
