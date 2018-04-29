@@ -7,7 +7,14 @@
     <script src="/socket.io/socket.io.js"></script>
   </head>
   <body>
-    test
+    Commands:
+    <ul>
+      <li>f = forward
+      <li>b = backward
+      <li>l = left
+      <li>r = right
+      <li>s = stop
+    </ul>
     <script>
 var socket = io();
 $(document.body).keypress((event) => {

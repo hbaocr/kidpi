@@ -1,0 +1,14 @@
+[Unit]
+Description=Robot Service
+After=network.target auditd.service
+
+[Service]
+ExecStart=/usr/bin/nodejs /home/pi/kidpi/robot/index.js
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+Alias=robot.service
+
