@@ -24,25 +24,17 @@ $(document.body).keypress((event) => {
   event.preventDefault();
   window.keydo = event;
   console.log(event);
-  keyPush(event.key);
+  socket.emit("msg", event.key);
 });
 
 function keyPush(key) {
-  console.log("Pushing key:");
   socket.emit("msg", key);
-  switch(key) {
-    case 'l':
-    case 'r':
-      setTimeout(() => {keyPush('f')}, 100); );
-      break;
-    default:
-  }
 }
 
 $("#fkey").click(() => { keyPush('f'); })
 $("#bkey").click(() => { keyPush('b'); })
-$("#rkey").click(() => { keyPush('r'); })
-$("#lkey").click(() => { keyPush('l'); })
+$("#rkey").click(() => { keyPush('r'); keyPush('f');})
+$("#lkey").click(() => { keyPush('l'); setTimeout(() => {keyPush('f')}, 200); })
 $("#skey").click(() => { keyPush('s'); })
     </script>
   </body>
