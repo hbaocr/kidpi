@@ -14,6 +14,7 @@ function startSpawn() {
 startSpawn();
 
 function startWork() {
+  console.log("Starting work...");
   fs.watch('.', {}, (eventType, filename) => {
     if (filename) {
       console.log("Something changed on: ", filename);
@@ -23,20 +24,20 @@ function startWork() {
           if (!err) {
             console.log("Got a new bark sound.");
             fs.unlink("./" + filename);
-            gpio.write(waterPin, false, (err) => {
+            gpio.write(waterPin, true, (err) => {
               if (err) {
                 console.log("Error in setting gpio pin.",err);
                 return;
               }
 
               setTimeout(() => {
-                gpio.write(waterPin, true, (err) => {
+                gpio.write(waterPin, false, (err) => {
                   if (err) {
                     console.log("Error in setting gpio pin.",err);
                     return;
                   }
                 });
-              }, 30000);
+              }, 1000);
             });
           }
         });
@@ -46,9 +47,10 @@ function startWork() {
 }
 
 var gpio = require('rpi-gpio');
-//gpio.setMode(gpio.MODE_BCM);
-var waterPin = 16;
-gpio.setup(waterPin, gpio.DIR_OUT, () => {
+var waterPin = 36;
+console.log("Setting up pin...");
+gpio.setup(waterPin, gpio.DIR_OUT, (err) => {
+  console.log("Done with setup...", err);
   startWork();
 });
 
