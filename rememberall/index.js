@@ -1,6 +1,12 @@
 const { spawn } = require('child_process');
 var fs = require('fs');
 var request = require('request');
+var Twilio = require('twilio');
+
+var accountSid = process.env.TWILIO_ACCOUNT_SID;
+var token = process.env.TWILIO_AUTH_TOKEN;
+
+var twilio = Twilio(accountSid, token);
 var root = "./images";
 
 var child = null;
@@ -33,6 +39,9 @@ function startWork() {
             console.log("Got a new image.");
             sendPicture(filename, (results) => {
               console.log("Picture result.", results);
+              if (found && found != "") {
+                sendSMS(results);
+              }
               startSpawn();
             });
           } else {
@@ -74,6 +83,21 @@ function sendPicture(filename, cb) {
   form.append('guid','4taBjfJ-8');
   form.append('uploadfile', fs.createReadStream(root + '/' + filename), {
       filename: filename
+  });
+}
+
+var from = process.env.FROM_NUMBER;
+var to = process.env.TO_NUMBER;
+
+// Send message using callback
+function sendSMS(body) {
+  twilio.messages.create({
+    from: from,
+    to: to,
+    body: body
+  }, function(err, result) {
+    console.log('Created message using callback');
+    console.log(result.sid);
   });
 }
 
