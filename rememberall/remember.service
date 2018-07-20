@@ -4,8 +4,7 @@ After=network-online.target
 
 [Service]
 WorkingDirectory=/home/pi/kidpi/rememberall/
-ExecStartPre=killall rec
-ExecStart=/usr/bin/nodejs /home/pi/kidpi/rememberall/index.js
+ExecStart=/usr/local/bin/node /home/pi/kidpi/rememberall/index.js
 StandardOutput=syslog
 User=pi
 Restart=always
