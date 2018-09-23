@@ -13,6 +13,14 @@ function startSpawn() {
 }
 startSpawn();
 
+// Make sure we reboot every 24 hours
+function rebootComputer() {
+  var rspawn = spawn('/sbin/shudown', "-r now".split(" "));
+  console.log("Shutting down.");
+  rspawn.on('close', function() {});
+}
+setTimeout(rebootComputer, 1000 * 60 * 60 * 24);
+
 function startWork() {
   console.log("Starting work...");
   fs.watch('.', {}, (eventType, filename) => {
