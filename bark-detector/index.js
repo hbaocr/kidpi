@@ -4,7 +4,7 @@ var child = null;
 function startSpawn() {
   // Start the soc recorder looking for barks...
   //rec -q mattpiece.wav sinc 120-2k silence 1 0.1 5% 1 .1 100% : newfile : restart 
-  child = spawn('rec', "-q mattpiece.wav sinc 120-2k silence 1 0.1 5% 1 .1 100% : newfile : restart ".split(" "));
+  child = spawn('rec', "-q mattpiece.wav sinc 1k-2k silence 1 0.1 5% 1 .1 100% : newfile : restart ".split(" "));
 
   child.on('close', (code) => {
     console.log(`child process exited with code ${code}`);
