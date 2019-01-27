@@ -9,10 +9,7 @@ class Dungeon {
     this.entrance = new Room();
     this.entrance.name = "Entrance";
     this.entrance.type = "Start";
-    this.entrance.attributes = [
-      "dark",
-      "cold"
-    ];
+    this.entrance.attributes = [Room.attrs[0]];
 
     let prevRoom = this.entrance;
     for (let i = 0; i < this.rooms.length; i++) {

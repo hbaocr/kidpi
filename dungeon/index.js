@@ -4,6 +4,8 @@ var Dungeon = require('./dungeon.js').Dungeon;
 var DungeonCore = require('./dungeon.js').DungeonCore;
 var Adventurer = require('./adventurer.js').Adventurer;
 
+var out = console.log;
+
 
 class Game {
   constructor() {
@@ -60,7 +62,10 @@ class Game {
     this.adventurer = new Adventurer(this);
     this.adventurer.buildSurvey(() => {
       console.log("You are done building your Adventurer!!  Onward!!");
-      this.tick();
+      setTimeout(() => {
+        console.log('\x1Bc');
+        this.tick();
+      }, 1000);
     });
   }
 
@@ -87,7 +92,7 @@ class Game {
   }
 
   goNorth() {
-    if (this.player.curRoom.directions.north) {
+    if (this.player.curRoom.hasNorth()) {
       this.player.curRoom = this.player.curRoom.directions.north;
       this.player.curRoom.describe();
     } else {
@@ -96,7 +101,7 @@ class Game {
   }
 
   goSouth() {
-    if (this.player.curRoom.directions.south) {
+    if (this.player.curRoom.hasSouth()) {
       this.player.curRoom = this.player.curRoom.directions.south;
       this.player.curRoom.describe();
     } else {
@@ -105,7 +110,7 @@ class Game {
   }
 
   goEast() {
-    if (this.player.curRoom.directions.east) {
+    if (this.player.curRoom.hasEast()) {
       this.player.curRoom = this.player.curRoom.directions.east;
       this.player.curRoom.describe();
     } else {
@@ -114,7 +119,7 @@ class Game {
   }
 
   goWest() {
-    if (this.player.curRoom.directions.west) {
+    if (this.player.curRoom.hasWest) {
       this.player.curRoom = this.player.curRoom.directions.west;
       this.player.curRoom.describe();
     } else {
@@ -123,7 +128,9 @@ class Game {
   }
 
   chooseRole() {
+    console.log();
     console.log("Which role would you like to fulfill?");
+    console.log();
     console.log("Options:");
     for (let i = 0; i < this.roleOptions.length; i++) {
       console.log(i + ": " + this.roleOptions[i].name);
@@ -144,7 +151,7 @@ class Game {
   }
 
   tick() {
-    console.log("This is turn..." + this.turn);
+    //console.log("This is turn..." + this.turn);
     if (this.turn == 1 && !this.player) {
       // This is the first turn of the game.
       this.chooseRole();
@@ -153,7 +160,7 @@ class Game {
 
     let options = this.coreOptions;
     let isAdventurer = false;
-    console.log("con: " + this.player.constructor.name);
+    //console.log("con: " + this.player.constructor.name);
     if (this.player.constructor.name == "Adventurer") {
       options = this.adventurerOptions;
       isAdventurer = true;
@@ -167,7 +174,7 @@ class Game {
     }
 
     if (isAdventurer) {
-      console.log("Current room: ", this.player.curRoom);
+      console.log("Current room: ", this.player.curRoom.name);
       if (this.player.curRoom) {
         this.player.curRoom.describe();
       }
@@ -186,6 +193,11 @@ class Game {
           found = true;
           options[i].action()
           this.turn++;
+          setTimeout(() => {
+            Util.clear();
+            this.tick();
+          }, 1000);
+          return;
         }
       }
       if (!found) {
@@ -195,6 +207,16 @@ class Game {
     });
   }
 }
+
+Util.clear();
+out("--------------------------------________***************************________--------------------------------");
+out();
+out("                                     Welcome to a grand new adventure.");
+out();
+out();
+out("Lets get started...");
+out();
+out("--------------------------------________***************************________--------------------------------");
 
 let game = new Game();
 game.tick();

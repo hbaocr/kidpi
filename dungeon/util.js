@@ -22,10 +22,15 @@ function getOppositeDirection(dir) {
     "south": "north" }[dir];
 }
 
+function clear() {
+  console.log('\x1Bc');
+}
+
 
 module.exports = {
   getRandomProp : getRandomProp,
   getRandom: getRandom,
   getOppositeDirection: getOppositeDirection,
   rl: rl,
+  clear: clear,
 }

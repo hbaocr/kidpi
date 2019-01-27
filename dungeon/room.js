@@ -29,8 +29,33 @@ class Room {
     this.stuff.push(Util.getRandomProp(Room.stuff_options));
   }
 
+  hasNorth() {
+    return this.directions.north != null;
+  }
+
+  hasSouth() {
+    return this.directions.south != null;
+  }
+
+  hasEast() {
+    return this.directions.east != null;
+  }
+
+  hasWest() {
+    return this.directions.west != null;
+  }
+
   describe() {
-    console.log("The room is: ", this.attributes[0].attr, " it has a ", this.monsters[0], " and you can see ", this.stuff[0]);
+    let desc = "The room is " + this.attributes[0].attr;
+    if (this.monsters.length) {
+      desc += " it has a " + this.monsters[0].name;
+    }
+
+    if (this.stuff.length) {
+      desc += " and you can see " + this.stuff[0];
+    }
+
+    console.log(desc);
     for (var dir in this.directions) {
       if (this.directions[dir]) {
         console.log("You can go: ", dir);

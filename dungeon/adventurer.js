@@ -27,8 +27,7 @@ class Adventurer {
           answers: { 
             "t":(value) => {
               console.log("Done.");
-              this.curBuildQuestion++;
-              this.buildSurvey();
+              this.nextQuestion();
             },
             "f": (value) => {
               this.nameNotAccepted(value);
@@ -45,8 +44,7 @@ class Adventurer {
               this.speed = 4;
               this.manaPerTurn = 0;
               this.weapons[0] = { name: "daggers", parts: ["dagger", "dagger"]};
-              this.curBuildQuestion++;
-              this.buildSurvey();
+              this.nextQuestion();
             },
             "Wizard": (value) => {
               this.type = value;
@@ -55,8 +53,7 @@ class Adventurer {
               this.speed = 3;
               this.manaPerTurn = 2;
               this.weapons[0] = { name: "staff", parts: ["staff"]};
-              this.curBuildQuestion++;
-              this.buildSurvey();
+              this.nextQuestion();
             },
             "Archer": (value) => {
               this.type = value;
@@ -65,8 +62,7 @@ class Adventurer {
               this.speed = 2;
               this.manaPerTurn = 0;
               this.weapons[0] = { name: "bow", parts: ["bow", "quiver", 10]};
-              this.curBuildQuestion++;
-              this.buildSurvey();
+              this.nextQuestion();
             },
             "Fighter": (value) => {
               this.type = value;
@@ -75,8 +71,7 @@ class Adventurer {
               this.speed = 1;
               this.manaPerTurn = 0;
               this.weapons[0] = { name: "short sword", parts: ["short sword"]};
-              this.curBuildQuestion++;
-              this.buildSurvey();
+              this.nextQuestion();
             }
           }
       }
@@ -88,14 +83,27 @@ class Adventurer {
     console.log("Great! Your name is: " + this.name);
     // This is the global player object.
     this.game.player = this;
-    this.curBuildQuestion++;
-    this.buildSurvey();
+    this.nextQuestion(false);
   }
 
   nameNotAccepted() {
     console.log("Drat! Try again.");
     this.curBuildQuestion--;
-    this.buildSurvey();
+    this.curBuildQuestion--;
+    this.nextQuestion();
+  }
+
+  nextQuestion(shouldClear) {
+    if (shouldClear !== false) {
+      shouldClear = true;
+    }
+    this.curBuildQuestion++;
+    setTimeout(() => {
+      if (shouldClear) {
+        console.log('\x1Bc');
+      }
+      this.buildSurvey();
+    }, 500);
   }
 
   buildSurvey(cb) {
