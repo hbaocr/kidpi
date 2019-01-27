@@ -45,6 +45,10 @@ class Room {
     return this.directions.west != null;
   }
 
+  hasMonster() {
+    return this.monsters.length != 0;
+  }
+
   describe() {
     let desc = "The room is " + this.attributes[0].attr;
     if (this.monsters.length) {

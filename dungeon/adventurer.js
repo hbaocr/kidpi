@@ -1,4 +1,5 @@
 var Util = require('./util.js');
+var Weapon = require('./weapon.js').Weapon;
 
 class Adventurer {
   constructor(game) {
@@ -11,6 +12,8 @@ class Adventurer {
     this.health = 10;
     this.manaPerTurn = 0;
     this.curRoom = null;
+    this.inFight = false;
+    this.fighting = null;
 
     this.armorPieces = [];
     this.weapons = [];
@@ -43,7 +46,7 @@ class Adventurer {
               this.strength = 2;
               this.speed = 4;
               this.manaPerTurn = 0;
-              this.weapons[0] = { name: "daggers", parts: ["dagger", "dagger"]};
+              this.weapons[0] = new Weapon("daggers", "stabby", "dagger", "dagger", null, 1);
               this.nextQuestion();
             },
             "Wizard": (value) => {
@@ -76,6 +79,20 @@ class Adventurer {
           }
       }
     ];
+  }
+
+  attack(cb) {
+    console.log("ATTACK!!!!!");
+    console.log("You swing with your " + this.weapons[0].describe());
+    console.log("It does " + this.weapons[0].damage + " damage  to " + this.fighting);
+    this.fighting.health -= this.weapons[0].damage;
+    console.log(this.fighting.name + " has " + this.fighting.health + " health left!");
+    if ( this.fighting.health <= 0 ) {
+      this.inFight = false;
+      this.curRoom.monsters = [];
+      console.log("You have vanquished " + this.fighting.name);
+    }
+    cb();
   }
 
   nameAccepted(name) {

@@ -45,6 +45,12 @@ class Game {
       {name: "Communicate", action: () => { this.handleCommunication() }},
       {name: "Run Away", action: () => { this.handleRunAway() }},
     ];
+
+    this.adventurerFightOptions = [
+      {name: "Attack", action: () => { this.handleAttack() }},
+      {name: "Run Away", action: () => { this.handleRun() }},
+    ];
+
     this.dungeon = new Dungeon(this);
   }
 
@@ -127,6 +133,18 @@ class Game {
     }
   }
 
+  handleCharge() {
+    out("You have decided to enage the " + this.player.curRoom.monsters[0].name);
+    out("You have " + this.player.weapons[0].describe());
+    this.player.inFight = true;
+    this.player.fighting = this.player.curRoom.monsters[0];
+  }
+
+  handleAttack(cb) {
+    this.player.attack(()=>{
+    });
+  }
+
   chooseRole() {
     console.log();
     console.log("Which role would you like to fulfill?");
@@ -161,11 +179,16 @@ class Game {
     let options = this.coreOptions;
     let isAdventurer = false;
     //console.log("con: " + this.player.constructor.name);
-    if (this.player.constructor.name == "Adventurer") {
-      options = this.adventurerOptions;
-      isAdventurer = true;
-      if (this.player.curRoom == null) 
-        this.player.curRoom = this.dungeon.entrance;
+    options = this.adventurerOptions;
+    if (this.player.curRoom == null)
+      this.player.curRoom = this.dungeon.entrance;
+
+    if (this.player.curRoom.hasMonster() && this.player.inFight != true) {
+      options = this.adventurerMonsterOptions;
+    }
+
+    if (this.player.inFight) {
+      options = this.adventurerFightOptions;
     }
 
     console.log("Options:");
@@ -173,17 +196,9 @@ class Game {
       console.log(i + ": " + options[i].name);
     }
 
-    if (isAdventurer) {
-      console.log("Current room: ", this.player.curRoom.name);
-      if (this.player.curRoom) {
-        this.player.curRoom.describe();
-      }
-
-      if (this.player.curRoom && this.player.curRoom.monsters.length > 0) {
-        for (let i = 0; i < this.adventurerMonsterOptions.length; i++) {
-          console.log(i + ": " + this.adventurerMonsterOptions[i].name);
-        }
-      }
+    console.log("Current room: ", this.player.curRoom.name);
+    if (this.player.curRoom) {
+      this.player.curRoom.describe();
     }
 
     Util.rl.question('\n  What would you like to do? ', (answer) => {
@@ -196,7 +211,7 @@ class Game {
           setTimeout(() => {
             Util.clear();
             this.tick();
-          }, 1000);
+          }, 3000);
           return;
         }
       }
