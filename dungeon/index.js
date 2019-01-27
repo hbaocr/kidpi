@@ -1,5 +1,3 @@
-let dungeon = {};
-
 const readline = require('readline');
 
 const rl = readline.createInterface({
@@ -25,10 +23,24 @@ class Game {
 
     this.adventurerOptions = [
       {name: "Look", action: () => { this.buildRoom() }},
-      {name: "Go north", action: () => { this.buildTrap() }},
-      {name: "Go east", action: () => { this.buildTrap() }},
-      {name: "Go south", action: () => { this.buildTrap() }},
-      {name: "Go west", action: () => { this.buildTrap() }},
+      {name: "Inspect", action: () => { this.inspectRoom() }},
+      {name: "Go north", action: () => { this.goNorth() }},
+      {name: "Go east", action: () => { this.goEast() }},
+      {name: "Go south", action: () => { this.goSouth() }},
+      {name: "Go west", action: () => { this.goWest() }},
+    ];
+
+    this.itemOptions = [
+      {name: "Inspect", action: () => { this.inspectRoom() }},
+      {name: "Take", action: () => { this.takeObjects() }},
+    ];
+
+    this.adventurerMonsterOptions = [
+      {name: "Charge", action: () => { this.handleCharge() }},
+      {name: "Shoot", action: () => { this.handleShooting() }},
+      {name: "Throw", action: () => { this.handleThrow() }},
+      {name: "Communicate", action: () => { this.handleCommunication() }},
+      {name: "Run Away", action: () => { this.handleRunAway() }},
     ];
   }
 
@@ -72,6 +84,42 @@ class Game {
     this.turn--;
   }
 
+  goNorth() {
+    if (player.curRoom.directions.north) {
+      player.curRoom = player.curRoom.directions.north;
+      player.curRoom.describe();
+    } else {
+      console.log("You have hit your nose on a wall.  But why?");
+    }
+  }
+
+  goSouth() {
+    if (player.curRoom.directions.south) {
+      player.curRoom = player.curRoom.directions.south;
+      player.curRoom.describe();
+    } else {
+      console.log("You have hit your nose on a wall.  But why?");
+    }
+  }
+
+  goEast() {
+    if (player.curRoom.directions.east) {
+      player.curRoom = player.curRoom.directions.east;
+      player.curRoom.describe();
+    } else {
+      console.log("You have hit your nose on a wall.  But why?");
+    }
+  }
+
+  goWest() {
+    if (player.curRoom.directions.west) {
+      player.curRoom = player.curRoom.directions.west;
+      player.curRoom.describe();
+    } else {
+      console.log("You have hit your nose on a wall.  But why?");
+    }
+  }
+
   chooseRole() {
     console.log("Which role would you like to fulfill?");
     console.log("Options:");
@@ -102,14 +150,31 @@ class Game {
     }
 
     let options = this.coreOptions;
+    let isAdventurer = false;
     console.log("con: " + player.constructor.name);
     if (player.constructor.name == "Adventurer") {
       options = this.adventurerOptions;
+      isAdventurer = true;
+      if (player.curRoom == null) 
+        player.curRoom = dungeon.entrance;
     }
 
     console.log("Options:");
     for (let i = 0; i < options.length; i++) {
       console.log(i + ": " + options[i].name);
+    }
+
+    if (isAdventurer) {
+      console.log("Current room: ", player.curRoom);
+      if (player.curRoom) {
+        player.curRoom.describe();
+      }
+
+      if (player.curRoom && player.curRoom.monsters.length > 0) {
+        for (let i = 0; i < this.adventurerMonsterOptions.length; i++) {
+          console.log(i + ": " + this.adventurerMonsterOptions[i].name);
+        }
+      }
     }
 
     rl.question('\n  What would you like to do? ', (answer) => {
@@ -129,12 +194,114 @@ class Game {
   }
 }
 
+function getOppositeDirection(dir) {
+  return {
+    "east": "west",
+    "west": "east",
+    "north": "south",
+    "south": "north" }[dir];
+}
+
+class Dungeon {
+  constructor() {
+    this.name= "unset";
+    this.type = "unset";
+    this.rooms = [];
+    this.rooms.length = 100;
+    this.entrance = new Room();
+    this.entrance.name = "Entrance";
+    this.entrance.type = "Start";
+    this.entrance.attributes = [
+      "dark",
+      "cold"
+    ];
+
+    let prevRoom = this.entrance;
+    for (let i = 0; i < this.rooms.length; i++) {
+      let curRoom = new Room();
+      this.rooms[i] = curRoom;
+      curRoom.randomize();
+      let direction = getRandom(["east", "west", "north", "south"]);
+      while (prevRoom.directions[direction] != null) {
+        direction = getRandom(["east", "west", "north", "south"]);
+      }
+      prevRoom.directions[direction] = curRoom;
+      curRoom.directions[getOppositeDirection(direction)] = prevRoom;
+      prevRoom = curRoom;
+    }
+  }
+
+  describe() {
+    console.log("The room is: ");
+    let curRoom = this.entrance;
+    let path = "";
+    let prevRoom = this.entrance;
+    this.entrance.visited = true;
+    while(curRoom.directions.east ||
+      curRoom.directions.west||
+      curRoom.directions.north||
+      curRoom.directions.south) {
+
+      let found = false;
+      if (curRoom.directions.east && !curRoom.directions.east.visted) {
+        console.log("Going East");
+        curRoom = curRoom.directions.east;
+        curRoom.visted = true;
+        found = true;
+        path += "<-";
+      }
+
+      if (curRoom.directions.west && !curRoom.directions.west.visted) {
+        console.log("Going West");
+        curRoom = curRoom.directions.west;
+        curRoom.visted = true;
+        found = true;
+        path += "->";
+      }
+
+      if (curRoom.directions.north && !curRoom.directions.north.visted) {
+        console.log("Going North");
+        curRoom = curRoom.directions.north;
+        curRoom.visted = true;
+        found = true;
+        path += "^";
+      }
+
+      if (curRoom.directions.south && !curRoom.directions.south.visted) {
+        console.log("Going South");
+        curRoom = curRoom.directions.south;
+        curRoom.visted = true;
+        found = true;
+        path += "v";
+      }
+
+      if (found) {
+        curRoom.describe();
+      } else {
+        break;
+      }
+
+    }
+    console.log(path);
+  }
+}
+
+function getRandom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function getRandomProp(obj) {
+  let keys = Object.keys(obj);
+  return obj[keys[Math.floor(Math.random() * keys.length)]];
+}
+
 class Room {
   constructor() {
     this.name= "unset";
     this.type = "unset";
     this.treasures = [];
     this.monsters = [];
+    this.stuff = [];
     this.traps = [];
     this.directions = {
       east: null,
@@ -145,15 +312,206 @@ class Room {
       up: null,
     }
     this.attributes = [
-      "wet",
-      "hot"
     ];
   }
 
+  randomize() {
+    this.name = Math.floor(Math.random() * 1000000);
+    this.monsters.push(getRandomProp(Room.monster_options));
+    this.attributes.push(getRandom(Room.attrs));
+    this.stuff.push(getRandomProp(Room.stuff_options));
+  }
+
   describe() {
-    console.log("The room is: ");
+    console.log("The room is: ", this.attributes[0].attr, " it has a ", this.monsters[0], " and you can see ", this.stuff[0]);
+    for (var dir in this.directions) {
+      if (this.directions[dir]) {
+        console.log("You can go: ", dir);
+      }
+    }
   }
 }
+
+Room.stuff_options = {
+  shelf: "shelf",
+  chest: "chest",
+  bed: "bed",
+  statue: "statue",
+  pool: "pool",
+  mushrooms: "mushrooms",
+  stalagtites: "stalagtites"
+}
+
+Room.monster_options = {
+  slime : {
+    name:"slime",
+    health: 2,
+    armor : 1,
+    strength : 1,
+    speed : 1,
+    manaPerTurn : 0,
+    lootClass: "junk",
+    weapons : { name: "snot", parts: ["snot"]},
+  },
+  giant_slime : {
+    name:"giant slime",
+    health: 5,
+    armor : 3,
+    strength : 3,
+    speed : 1,
+    manaPerTurn : 0,
+    lootClass: "low",
+    weapons : { name: "heavy snot", parts: ["heavy snot"]},
+  },
+  slime_swarm: {
+    name:"slime swarm",
+    health: 5,
+    armor : 1,
+    strength : 1,
+    speed : 4,
+    manaPerTurn : 0,
+    lootClass: "junk",
+    weapons : { name: "snot storm", parts: ["snot storm"]},
+  },
+  skeleton: {
+    name:"skeleton",
+    health: 3,
+    armor : 2,
+    strength : 2,
+    speed : 2,
+    manaPerTurn : 0,
+    lootClass: "low",
+    weapons : { name: "rusty sword", parts: ["rusty sword"]},
+  },
+  zombie: {
+    name:"zombie",
+    health: 5,
+    armor : 2,
+    strength: 4,
+    speed: 1,
+    manaPerTurn : 0,
+    lootClass: "low",
+    weapons : { name: "claws", parts: ["claws"]},
+  },
+  giant_spider: {
+    name:"giant spider",
+    health: 5,
+    armor : 1,
+    strength: 3,
+    speed: 2,
+    manaPerTurn : 0,
+    lootClass: "low",
+    weapons : { name: "poisonous fangs", parts: ["poisonous fangs"]},
+  },
+  mimic: {
+    name:"chest",
+    health: 5,
+    armor : 4,
+    strength: 6,
+    speed: 2,
+    manaPerTurn : 0,
+    lootClass: "high",
+    weapons : { name: "teeth", parts: ["teeth"]},
+  },
+  demon: {
+    name:"demon",
+    health: 15,
+    armor : 10,
+    strength: 6,
+    speed: 3,
+    manaPerTurn : 1,
+    lootClass: "exceptional",
+    weapons : { name: "teeth", parts: ["teeth"]},
+  },
+}
+
+class Monster {
+}
+
+Monster.lootClass = {
+  "junk" : [
+  ],
+  "low" : [
+  ],
+  "mid" : [
+  ],
+  "high" : [
+  ],
+  "rare" : [
+  ],
+  "exceptional" : [
+  ],
+  "oneofakind" : [
+  ],
+}
+
+Room.attrs = [
+  {attr: "wet", stuff: [
+    Room.stuff_options.shelf,
+    Room.stuff_options.chest,
+    Room.stuff_options.statue,
+    Room.stuff_options.pool,
+    Room.stuff_options.mushrooms,
+  ], notattrs:["dry"]},
+  {attr: "cold", stuff: [
+    Room.stuff_options.shelf,
+    Room.stuff_options.chest,
+    Room.stuff_options.statue,
+    Room.stuff_options.pool,
+    Room.stuff_options.bed,
+  ], notattrs:["hot", "humid"]},
+  {attr: "slimy", stuff: [
+    Room.stuff_options.shelf,
+    Room.stuff_options.chest,
+    Room.stuff_options.statue,
+    Room.stuff_options.pool,
+    Room.stuff_options.mushrooms,
+  ], notattrs:["dry"]},
+  {attr: "dark", stuff: [
+    Room.stuff_options.shelf,
+    Room.stuff_options.chest,
+    Room.stuff_options.statue,
+    Room.stuff_options.pool,
+    Room.stuff_options.mushrooms,
+    Room.stuff_options.bed,
+  ], notattrs:["bright"]},
+  {attr: "humid", stuff: [
+    Room.stuff_options.shelf,
+    Room.stuff_options.chest,
+    Room.stuff_options.statue,
+    Room.stuff_options.pool,
+    Room.stuff_options.mushrooms,
+  ], notattrs:["dry","cold"]},
+  {attr: "hot", stuff: [
+    Room.stuff_options.shelf,
+    Room.stuff_options.chest,
+    Room.stuff_options.statue,
+    Room.stuff_options.pool,
+    Room.stuff_options.mushrooms,
+  ], notattrs:["cold"]},
+  {attr: "bright", stuff: [
+    Room.stuff_options.shelf,
+    Room.stuff_options.chest,
+    Room.stuff_options.statue,
+    Room.stuff_options.pool,
+    Room.stuff_options.mushrooms,
+  ], notattrs:["dark", "cavelike"]},
+  {attr: "cavelike", stuff: [
+    Room.stuff_options.shelf,
+    Room.stuff_options.chest,
+    Room.stuff_options.statue,
+    Room.stuff_options.pool,
+    Room.stuff_options.mushrooms,
+  ], notattrs:["bright"]},
+  {attr: "dry", stuff: [
+    Room.stuff_options.shelf,
+    Room.stuff_options.chest,
+    Room.stuff_options.statue,
+    Room.stuff_options.pool,
+    Room.stuff_options.mushrooms,
+  ], notattrs:["wet","slimy"]},
+]
+
 
 class DungeonCore {
   constructor() {
@@ -245,6 +603,7 @@ class Adventurer {
     this.speed = 0;
     this.health = 10;
     this.manaPerTurn = 0;
+    this.curRoom = null;
 
     this.armorPieces = [];
     this.weapons = [];
@@ -376,6 +735,8 @@ class Adventurer {
   }
 }
 
+let dungeon = new Dungeon();
+dungeon.describe();
 let game = new Game();
 let start = new Room();
 let player = null;
