@@ -26,6 +26,11 @@ function clear() {
   console.log('\x1Bc');
 }
 
+function hitCheck(speedAttack, speedDefend) {
+  let strike = Math.random() * (10 + speedAttack - speedDefend);
+  return strike > 5;
+}
+
 
 module.exports = {
   getRandomProp : getRandomProp,
@@ -33,4 +38,5 @@ module.exports = {
   getOppositeDirection: getOppositeDirection,
   rl: rl,
   clear: clear,
+  hitCheck: hitCheck,
 }

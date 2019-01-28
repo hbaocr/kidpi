@@ -62,7 +62,7 @@ class Room {
     console.log(desc);
     for (var dir in this.directions) {
       if (this.directions[dir]) {
-        console.log("You can go: ", dir);
+        console.log("It has a door to the", dir);
       }
     }
   }

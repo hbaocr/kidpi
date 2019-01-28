@@ -81,18 +81,78 @@ class Adventurer {
     ];
   }
 
+  playerAttack(cb) {
+    console.log("\n\nYou swing with your " + this.weapons[0].name);
+    // Check to see if we hit.
+    setTimeout(() => {
+      if (Util.hitCheck(this.speed, this.fighting.speed)) {
+        console.log("\n\n\nHit!!");
+        console.log("\nIt does " + this.weapons[0].damage + " damage  to " + this.fighting.name);
+        this.fighting.health -= this.weapons[0].damage;
+        console.log(this.fighting.name + " has " + this.fighting.health + " health left!");
+      } else {
+        console.log("\n\n\nOh no! You missed!!");
+        console.log(this.fighting.name + " has " + this.fighting.health + " health left!");
+      }
+      cb();
+    }, 2000);
+  }
+
+  monsterAttack(cb) {
+    // Uh, oh - see if they get to swing back...
+    let weapon = Util.getRandom(this.fighting.weapons);
+    console.log();
+    console.log(`${this.fighting.name} sizes you up and swings with his ${weapon.name}...`);
+    setTimeout(() => {
+      if (Util.hitCheck(this.fighting.speed, this.speed)) {
+        let damage = weapon.damage - Math.floor(Math.random() * this.armor);
+        console.log(`Ouch!  The ${this.fighting.name} hit you with his ${weapon.name}!!!`);
+        console.log(`You took ${damage} damage.`);
+        this.health -= damage;
+        if (this.health <= 0) {
+          console.log(".");
+          console.log(".");
+          console.log(".");
+          console.log(".");
+          console.log(".");
+          console.log(".");
+          console.log(".");
+          console.log(".");
+          console.log("v");
+          console.log("You are dead.");
+          console.log("You are dead.");
+          setTimeout(() => {
+            console.log("So dead.");
+            setTimeout(() => {
+              console.log("So sad.");
+            }, 3000);
+          }, 3000);
+        } else {
+          console.log("You lived!");
+          setTimeout(() => { cb(); }, 3000);
+        }
+      } else {
+        console.log(`He missed with his ${weapon.name}!!!`);
+        setTimeout(() => { cb(); }, 3000);
+      }
+    }, 2000);// Suspense. ;)
+  }
+
   attack(cb) {
     console.log("ATTACK!!!!!");
-    console.log("You swing with your " + this.weapons[0].name);
-    console.log("It does " + this.weapons[0].damage + " damage  to " + this.fighting);
-    this.fighting.health -= this.weapons[0].damage;
-    console.log(this.fighting.name + " has " + this.fighting.health + " health left!");
-    if ( this.fighting.health <= 0 ) {
-      this.inFight = false;
-      this.curRoom.monsters = [];
-      console.log("You have vanquished " + this.fighting.name);
-    }
-    cb();
+    this.playerAttack(() => {
+      // See if the beast is still alive.
+      if ( this.fighting.health <= 0 ) {
+        this.inFight = false;
+        this.curRoom.monsters = [];
+        console.log("You have vanquished " + this.fighting.name + "!!!");
+        setTimeout(() => { cb(); }, 3000);
+      } else {
+        setTimeout(() => {
+          this.monsterAttack(cb);
+        }, 1000);
+      }
+    });
   }
 
   nameAccepted(name) {

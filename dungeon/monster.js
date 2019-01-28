@@ -1,3 +1,6 @@
+var Util = require('./util.js');
+var Weapon = require('./weapon.js').Weapon;
+
 class Monster {
 }
 
@@ -27,7 +30,7 @@ Monster.monster_options = {
     speed : 1,
     manaPerTurn : 0,
     lootClass: "junk",
-    weapons : { name: "snot", parts: ["snot"]},
+    weapons : [new Weapon("snot", "acid", "-", "-", null, 1)]
   },
   giant_slime : {
     name:"giant slime",
@@ -37,7 +40,7 @@ Monster.monster_options = {
     speed : 1,
     manaPerTurn : 0,
     lootClass: "low",
-    weapons : { name: "heavy snot", parts: ["heavy snot"]},
+    weapons : [new Weapon("heavy snot", "acid", "-", "-", null, 3)]
   },
   slime_swarm: {
     name:"slime swarm",
@@ -47,7 +50,7 @@ Monster.monster_options = {
     speed : 4,
     manaPerTurn : 0,
     lootClass: "junk",
-    weapons : { name: "snot storm", parts: ["snot storm"]},
+    weapons : [new Weapon("snot storm", "acid", "-", "-", null, 1)]
   },
   skeleton: {
     name:"skeleton",
@@ -57,7 +60,7 @@ Monster.monster_options = {
     speed : 2,
     manaPerTurn : 0,
     lootClass: "low",
-    weapons : { name: "rusty sword", parts: ["rusty sword"]},
+    weapons : [new Weapon("rusty sword", "stabby", "rusty sword", "", null, 2)]
   },
   zombie: {
     name:"zombie",
@@ -67,7 +70,7 @@ Monster.monster_options = {
     speed: 1,
     manaPerTurn : 0,
     lootClass: "low",
-    weapons : { name: "claws", parts: ["claws"]},
+    weapons : [new Weapon("claws", "claws", "-", "-", null, 4)]
   },
   giant_spider: {
     name:"giant spider",
@@ -77,7 +80,7 @@ Monster.monster_options = {
     speed: 2,
     manaPerTurn : 0,
     lootClass: "low",
-    weapons : { name: "poisonous fangs", parts: ["poisonous fangs"]},
+    weapons : [new Weapon("poisonous fangs", "poison", "-", "-", null, 3)]
   },
   mimic: {
     name:"chest",
@@ -87,7 +90,7 @@ Monster.monster_options = {
     speed: 2,
     manaPerTurn : 0,
     lootClass: "high",
-    weapons : { name: "teeth", parts: ["teeth"]},
+    weapons : [new Weapon("teeth", "teeth", "-", "-", null, 5)]
   },
   demon: {
     name:"demon",
@@ -97,7 +100,7 @@ Monster.monster_options = {
     speed: 3,
     manaPerTurn : 1,
     lootClass: "exceptional",
-    weapons : { name: "teeth", parts: ["teeth"]},
+    weapons : [new Weapon("teeth", "teeth", "-", "-", null, 4), new Weapon("claws", "claws", "claws", "", null, 6), new Weapon("whip", "whip", "", "whip", null, 9)]
   },
 }
 

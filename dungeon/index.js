@@ -47,7 +47,7 @@ class Game {
     ];
 
     this.adventurerFightOptions = [
-      {name: "Attack", action: () => { this.handleAttack() }},
+      {name: "Attack", action: (cb) => { this.handleAttack(cb); return true; }},
       {name: "Run Away", action: () => { this.handleRun() }},
     ];
 
@@ -142,6 +142,7 @@ class Game {
 
   handleAttack(cb) {
     this.player.attack(()=>{
+      cb();
     });
   }
 
@@ -179,7 +180,7 @@ class Game {
 
     let options = this.coreOptions;
     let isAdventurer = false;
-    //console.log("con: " + this.player.constructor.name);
+    console.log(`Stats: ${this.player.name} has ${this.player.health} health and is carrying a ${this.player.weapons[0].name}.`);
     options = this.adventurerOptions;
     if (this.player.curRoom == null)
       this.player.curRoom = this.dungeon.entrance;
@@ -207,12 +208,18 @@ class Game {
       for (let i = 0; i < options.length; i++) {
         if ((answer.toLowerCase() == options[i].name.toLowerCase()) || (answer == ""+i)) {
           found = true;
-          options[i].action()
-          this.turn++;
-          setTimeout(() => {
-            Util.clear();
-            this.tick();
-          }, 3000);
+          var goAhead = () => {
+            this.turn++;
+            setTimeout(() => {
+              Util.clear();
+              this.tick();
+            }, 3000);
+          }
+
+          let waitForIt = options[i].action(goAhead)
+          if (!waitForIt) {
+            goAhead();
+          }
           return;
         }
       }
