@@ -134,8 +134,8 @@ class Game {
   }
 
   handleCharge() {
-    out("You have decided to enage the " + this.player.curRoom.monsters[0].name);
-    out("You have " + this.player.weapons[0].describe());
+    out("You have decided to enage the " + this.player.curRoom.monsters[0].name + " with your " +
+        this.player.weapons[0].name);
     this.player.inFight = true;
     this.player.fighting = this.player.curRoom.monsters[0];
   }
@@ -172,7 +172,8 @@ class Game {
     //console.log("This is turn..." + this.turn);
     if (this.turn == 1 && !this.player) {
       // This is the first turn of the game.
-      this.chooseRole();
+      //this.chooseRole();
+      this.buildAdventurer();
       return;
     }
 

@@ -55,7 +55,7 @@ class Adventurer {
               this.strength = 2;
               this.speed = 3;
               this.manaPerTurn = 2;
-              this.weapons[0] = { name: "staff", parts: ["staff"]};
+              this.weapons[0] = new Weapon("staff", "stick", "-", "-", null, 1);
               this.nextQuestion();
             },
             "Archer": (value) => {
@@ -64,7 +64,7 @@ class Adventurer {
               this.strength = 3;
               this.speed = 2;
               this.manaPerTurn = 0;
-              this.weapons[0] = { name: "bow", parts: ["bow", "quiver", 10]};
+              this.weapons[0] = new Weapon("bow", "bow", "-", "-", 30, 1);
               this.nextQuestion();
             },
             "Fighter": (value) => {
@@ -73,7 +73,7 @@ class Adventurer {
               this.strength = 3;
               this.speed = 1;
               this.manaPerTurn = 0;
-              this.weapons[0] = { name: "short sword", parts: ["short sword"]};
+              this.weapons[0] = new Weapon("short sword", "stabby", "", "short sword", null, 3);
               this.nextQuestion();
             }
           }
@@ -83,7 +83,7 @@ class Adventurer {
 
   attack(cb) {
     console.log("ATTACK!!!!!");
-    console.log("You swing with your " + this.weapons[0].describe());
+    console.log("You swing with your " + this.weapons[0].name);
     console.log("It does " + this.weapons[0].damage + " damage  to " + this.fighting);
     this.fighting.health -= this.weapons[0].damage;
     console.log(this.fighting.name + " has " + this.fighting.health + " health left!");

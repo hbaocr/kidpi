@@ -23,14 +23,18 @@ class Weapon {
 
   describe() {
     let desc = "";
-    if (this.parts.leftHand) {
-      desc += "In your left hand you have " + this.parts.leftHand;
-    }
-    if (this.parts.rightHand) {
-      desc += "\nIn your right hand you have " + this.parts.rightHand;
-    }
-    if (this.parts.quiver) {
-      desc += "In your quiver you have " + this.parts.quiver;
+    if (this.parts.leftHand == "-") {
+        desc += "In your hands you have a " + this.name;
+    } else {
+      if (this.parts.leftHand) {
+        desc += "In your left hand you have " + this.parts.leftHand;
+      }
+      if (this.parts.rightHand) {
+        desc += "\nIn your right hand you have " + this.parts.rightHand;
+      }
+      if (this.parts.quiver) {
+        desc += "In your quiver you have " + this.parts.quiver;
+      }
     }
 
     console.log(desc);
