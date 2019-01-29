@@ -6,8 +6,14 @@ class Monster {
 
 Monster.lootClass = {
   "junk" : [
+    "rusty knife",
+    "leather glove",
+    "dirty rag",
+    "rotten meat",
   ],
   "low" : [
+    "knife",
+    "leather helmet",
   ],
   "mid" : [
   ],

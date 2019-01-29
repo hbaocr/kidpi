@@ -45,6 +45,14 @@ class Room {
     return this.directions.west != null;
   }
 
+  hasUp() {
+    return this.directions.up != null;
+  }
+
+  hasDown() {
+    return this.directions.down != null;
+  }
+
   hasMonster() {
     return this.monsters.length != 0;
   }

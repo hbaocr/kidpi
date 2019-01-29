@@ -13,7 +13,7 @@ class Adventurer {
     this.manaPerTurn = 0;
     this.curRoom = null;
     this.inFight = false;
-    this.fighting = null;
+    this.fighting = null; // Which monster is currently engaged.
 
     this.armorPieces = [];
     this.weapons = [];
@@ -106,30 +106,36 @@ class Adventurer {
     setTimeout(() => {
       if (Util.hitCheck(this.fighting.speed, this.speed)) {
         let damage = weapon.damage - Math.floor(Math.random() * this.armor);
-        console.log(`Ouch!  The ${this.fighting.name} hit you with his ${weapon.name}!!!`);
-        console.log(`You took ${damage} damage.`);
-        this.health -= damage;
-        if (this.health <= 0) {
-          console.log(".");
-          console.log(".");
-          console.log(".");
-          console.log(".");
-          console.log(".");
-          console.log(".");
-          console.log(".");
-          console.log(".");
-          console.log("v");
-          console.log("You are dead.");
-          console.log("You are dead.");
-          setTimeout(() => {
-            console.log("So dead.");
-            setTimeout(() => {
-              console.log("So sad.");
-            }, 3000);
-          }, 3000);
-        } else {
-          console.log("You lived!");
+        if (damage <= 0) {
+          damage = 0;
+          console.log("Your armor deflected his blow!  No damage!!!");
           setTimeout(() => { cb(); }, 3000);
+        } else {
+          console.log(`Ouch!  The ${this.fighting.name} hit you with his ${weapon.name}!!!`);
+          console.log(`You took ${damage} damage.`);
+          this.health -= damage;
+          if (this.health <= 0) {
+            console.log(".");
+            console.log(".");
+            console.log(".");
+            console.log(".");
+            console.log(".");
+            console.log(".");
+            console.log(".");
+            console.log(".");
+            console.log("v");
+            console.log("You are dead.");
+            console.log("You are dead.");
+            setTimeout(() => {
+              console.log("So dead.");
+              setTimeout(() => {
+                console.log("So sad.");
+              }, 3000);
+            }, 3000);
+          } else {
+            console.log("You lived!!!");
+            setTimeout(() => { cb(); }, 3000);
+          }
         }
       } else {
         console.log(`He missed with his ${weapon.name}!!!`);

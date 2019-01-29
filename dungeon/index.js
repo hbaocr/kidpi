@@ -26,11 +26,13 @@ class Game {
 
     this.adventurerOptions = [
       {name: "Look", action: () => { this.buildRoom() }},
-      {name: "Inspect", action: () => { this.inspectRoom() }},
-      {name: "Go north", action: () => { this.goNorth() }},
-      {name: "Go east", action: () => { this.goEast() }},
-      {name: "Go south", action: () => { this.goSouth() }},
-      {name: "Go west", action: () => { this.goWest() }},
+      {name: "Inspect", action: () => { this.player.curRoom.describe(); }},
+      {name: "Go north", viable: () => {return this.player.curRoom.hasNorth();}, action: () => { this.goNorth() }},
+      {name: "Go south", viable: () => {return this.player.curRoom.hasSouth();}, action: () => { this.goSouth() }},
+      {name: "Go east", viable: () => {return this.player.curRoom.hasEast();}, action: () => { this.goEast() }},
+      {name: "Go west", viable: () => {return this.player.curRoom.hasWest();}, action: () => { this.goWest() }},
+      {name: "Go Up", viable: () => {return this.player.curRoom.hasUp();}, action: () => { this.goUp() }},
+      {name: "Go Down", viable: () => {return this.player.curRoom.hasDown();}, action: () => { this.goDown() }},
     ];
 
     this.itemOptions = [
@@ -195,12 +197,9 @@ class Game {
 
     console.log("Options:");
     for (let i = 0; i < options.length; i++) {
-      console.log(i + ": " + options[i].name);
-    }
-
-    console.log("Current room: ", this.player.curRoom.name);
-    if (this.player.curRoom) {
-      this.player.curRoom.describe();
+      if (!options[i].viable || options[i].viable()) {
+        console.log(i + ": " + options[i].name);
+      }
     }
 
     Util.rl.question('\n  What would you like to do? ', (answer) => {
