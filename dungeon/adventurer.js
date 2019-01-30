@@ -128,7 +128,11 @@ class Adventurer {
         }
 
         console.log("\nIt does " + damage + " damage to " + this.fighting.name);
-        this.fighting.health -= this.weapons[0].damage;
+        if (spell) {
+          this.fighting.health -= this.spells[0].effect;
+        } else {
+          this.fighting.health -= this.weapons[0].damage;
+        }
         console.log(this.fighting.name + " has " + this.fighting.health + " health left!");
       } else {
         console.log("\n\n\nOh no! You missed!!");
@@ -179,7 +183,7 @@ class Adventurer {
         }
       } else {
         console.log(`He missed with his ${weapon.name}!!!`);
-        setTimeout(() => { cb(); }, 1000);
+        cb();
       }
     }, 2000);// Suspense. ;)
   }
@@ -260,7 +264,6 @@ class Adventurer {
 
     console.log("You are on question: ", this.curBuildQuestion, " of ", this.buildQuestions.length - 1);
 
-
     if (this.curBuildQuestion < this.buildQuestions.length) {
       console.log("Next question....");
       let curQuestion = this.buildQuestions[this.curBuildQuestion];
@@ -271,24 +274,37 @@ class Adventurer {
       }
 
       let options = "(";
+      let optionCt = 0;
       for ( let o in curQuestion.answers ) {
-        options += o + ", ";
+        if (options.length > 1) { options += ", ";}
+
+        optionCt++
+
+        if (o != "any") {
+          options += optionCt + ": ";
+          curQuestion.answers[o].optionCt = optionCt;
+        }
+
+        options += o;
       }
 
       options += ")";
 
       Util.rl.question('\n '+curQuestion.q + " " + options + '\n>>', (answer) => {
         if (curQuestion.answers) {
-          if (this.buildQuestions[this.curBuildQuestion].answers["any"]) {
-            this.buildQuestions[this.curBuildQuestion].answers["any"](answer);
+          if (curQuestion.answers["any"]) {
+            curQuestion.answers["any"](answer);
             return;
           }
 
           var found = false;
-          for (let i in this.buildQuestions[this.curBuildQuestion].answers) {
-            if (answer.toLowerCase() == i.toLowerCase()) {
+          for (let i in curQuestion.answers) {
+            let curAnswer = curQuestion.answers[i];
+            if (answer.toLowerCase() == i.toLowerCase() ||
+              (answer - 0 == curAnswer.optionCt)) {
               found = true;
-              this.buildQuestions[this.curBuildQuestion].answers[i](answer);
+              console.log("You said: ", answer, ":", i);
+              curQuestion.answers[i](i.toLowerCase());
             }
           }
 

@@ -2,6 +2,33 @@ var Util = require('./util.js');
 var Weapon = require('./weapon.js').Weapon;
 
 class Monster {
+  constructor(name, health, armor, strength, speed, lootClass, weapons) {
+    this.name = name;
+    this.health = health;
+    this.armor = armor;
+    this.strength = strength;
+    this.speed = speed;
+    this.lootClass = lootClass;
+    this.weapons = weapons;
+  }
+
+  createRandom() {
+    let whichMonster = Util.getRandomProp(Monster.monster_options);
+    return this.create(whichMonster);
+  }
+
+  create(whichOption) {
+    let monster = new Monster(
+      whichOption.name,
+      whichOption.health,
+      whichOption.armor,
+      whichOption.strength,
+      whichOption.speed,
+      whichOption.lootClass,
+      whichOption.weapons
+    );
+    return monster;
+  }
 }
 
 Monster.lootClass = {

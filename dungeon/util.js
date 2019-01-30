@@ -11,7 +11,9 @@ function getRandom(arr) {
 
 function getRandomProp(obj) {
   let keys = Object.keys(obj);
-  return obj[keys[Math.floor(Math.random() * keys.length)]];
+  let indexSelected = Math.floor(Math.random() * keys.length);
+  let selection = obj[keys[indexSelected]];
+  return selection;
 }
 
 function getOppositeDirection(dir) {

@@ -41,8 +41,8 @@ class Game {
     ];
 
     this.adventurerMonsterOptions = [
-      {name: "Charge", action: () => { this.handleCharge() }},
-      {name: "Cast", viable: () => { return this.player.type == "wizard"; }, action: (cb) => { this.handleSpell(cb) }},
+      {name: "Charge", action: (cb) => { this.handleCharge(cb); return true; }},
+      {name: "Cast", viable: () => { return this.player.type == "wizard"; }, action: (cb) => { this.handleSpell(cb); return true; }},
       {name: "Shoot", action: () => { this.handleShooting() }},
       {name: "Throw", action: () => { this.handleThrow() }},
       {name: "Communicate", action: () => { this.handleCommunication() }},
@@ -51,7 +51,7 @@ class Game {
 
     this.adventurerFightOptions = [
       {name: "Attack", action: (cb) => { this.handleAttack(cb); return true; }},
-      {name: "Cast", viable: () => { return this.player.type == "wizard"; }, action: (cb) => { this.handleSpell(cb) }},
+      {name: "Cast", viable: () => { return this.player.type == "wizard"; }, action: (cb) => { this.handleSpell(cb); return true; }},
       {name: "Run Away", viable: () => { return true; }, action: () => { this.handleRun() }},
     ];
 
@@ -160,6 +160,7 @@ class Game {
         this.player.weapons[0].name);
     this.player.inFight = true;
     this.player.fighting = this.player.curRoom.monsters[0];
+    cb();
   }
 
   handleSpell(cb) {
@@ -209,6 +210,10 @@ class Game {
     let options = this.coreOptions;
     let isAdventurer = false;
     console.log(`Stats: ${this.player.name} has ${this.player.health} health ${this.player.mana} mana and is carrying a ${this.player.weapons[0].name}.`);
+    if (this.player.inFight) {
+      console.log(`In combat with ${this.player.fighting.name}!`);
+    }
+    console.l
     options = this.adventurerOptions;
     if (this.player.curRoom == null)
       this.player.curRoom = this.dungeon.entrance;
@@ -238,7 +243,7 @@ class Game {
             setTimeout(() => {
               Util.clear();
               this.tick();
-            }, 3000);
+            }, 2000);
           }
 
           let waitForIt = options[i].action(goAhead)

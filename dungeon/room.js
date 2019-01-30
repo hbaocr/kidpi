@@ -25,7 +25,7 @@ class Room {
 
   randomize() {
     this.name = Math.floor(Math.random() * 1000000);
-    this.monsters.push(Util.getRandomProp(Monster.monster_options));
+    this.monsters.push((new Monster()).createRandom());
     this.attributes.push(Util.getRandom(Room.attrs));
     this.stuff.push(Util.getRandomProp(Room.stuff_options));
     this.mana = 10 + Math.floor(Math.random() * 10);
