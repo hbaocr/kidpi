@@ -5,25 +5,98 @@ class Dungeon {
     this.name= "unset";
     this.type = "unset";
     this.rooms = [];
-    this.rooms.length = 100;
+    this.roomFactor = 10;
+    this.roomGrid = [];
+    for (let i = 0; i < this.roomFactor; i++) { this.roomGrid[i] = []; this.roomGrid[i].length = this.roomFactor; }
+
     this.entrance = new Room();
     this.entrance.name = "Entrance";
     this.entrance.type = "Start";
     this.entrance.attributes = [Room.attrs[0]];
+    this.entrance.visited = true;
 
     let prevRoom = this.entrance;
-    for (let i = 0; i < this.rooms.length; i++) {
-      let curRoom = new Room();
-      this.rooms[i] = curRoom;
-      curRoom.randomize();
-      let direction = Util.getRandom(["east", "west", "north", "south"]);
-      while (prevRoom.directions[direction] != null) {
-        direction = Util.getRandom(["east", "west", "north", "south"]);
+    let buildPosX = Math.floor(this.roomFactor/2);
+    let buildPosY = 0;
+    prevRoom.x = buildPosX;
+    prevRoom.y = buildPosY;
+    this.roomGrid[buildPosX][buildPosY] = this.entrance;
+
+    this.lastRoomX = Math.floor(this.roomFactor/2 + (Math.random() * (this.roomFactor/2)));
+    this.lastRoomY = Math.floor(this.roomFactor/2 + (Math.random() * (this.roomFactor/2)));
+    console.log("Boss room is at: ", this.lastRoomX, this.lastRoomY);
+
+    while (true) {
+      if (buildPosX == this.lastRoomX && buildPosY == this.lastRoomY) {
+        break;
       }
-      prevRoom.directions[direction] = curRoom;
-      curRoom.directions[Util.getOppositeDirection(direction)] = prevRoom;
-      prevRoom = curRoom;
+      let direction = Math.floor(Math.random() * 4);
+      let compassDir = "";
+      if (direction == 0) {
+        buildPosY++;
+        compassDir = "north";
+      } else if (direction == 1) {
+        buildPosX++;
+        compassDir = "east";
+      } else if (direction == 2) {
+        buildPosX--;
+        compassDir = "west";
+      } else if (direction == 3) {
+        buildPosY--;
+        compassDir = "south";
+      }
+
+      if (buildPosY > this.roomFactor - 1) {
+        buildPosY = this.roomFactor - 1;
+      }
+
+      if (buildPosY < 0) { buildPosY = 0; }
+
+      if (buildPosX > this.roomFactor - 1) {
+        buildPosX = this.roomFactor - 1;
+      }
+
+      if (buildPosX < 0) { buildPosX = 0; }
+
+      if (this.roomGrid[buildPosX][buildPosY] == null) {
+        let room = new Room();
+        room.randomize();
+        room.x = buildPosX;
+        room.y = buildPosY;
+        room.directions[compassDir] = prevRoom;
+        this.roomGrid[buildPosX][buildPosY] = room;
+        this.rooms.push(room);
+        prevRoom.directions[Util.getOppositeDirection(compassDir)] = room;
+        prevRoom = room;
+      }
     }
+    this.drawMap();
+  }
+
+  drawMap() {
+    for (let i = 0; i < this.roomFactor; i++) {
+      let rowDesc = "";
+      for (let j = 0; j < this.roomFactor; j++) {
+        if (this.roomGrid[i][j] && this.roomGrid[i][j].visited) {
+          rowDesc += "X";
+        } else if (this.roomGrid[i][j]) {
+          rowDesc += "*";
+        } else {
+          rowDesc += ".";
+        }
+      }
+      console.log(rowDesc);
+    }
+  }
+
+  pickDirection(prevRoom) {
+    // Pick a direction to attach this new room to.
+    let direction = Util.getRandom(["east", "west", "north", "south"]);
+    while (prevRoom.directions[direction] != null) {
+      direction = Util.getRandom(["east", "west", "north", "south"]);
+    }
+
+    return direction;
   }
 
   describe() {

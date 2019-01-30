@@ -119,6 +119,7 @@ class Game {
     if (this.player.curRoom.hasNorth()) {
       this.player.curRoom = this.player.curRoom.directions.north;
       this.player.curRoom.describe();
+      this.player.curRoom.visted = true;
       this.addManaCheck();
     } else {
       console.log("You have hit your nose on a wall.  But why?");
@@ -129,6 +130,7 @@ class Game {
     if (this.player.curRoom.hasSouth()) {
       this.player.curRoom = this.player.curRoom.directions.south;
       this.player.curRoom.describe();
+      this.player.curRoom.visted = true;
       this.addManaCheck();
     } else {
       console.log("You have hit your nose on a wall.  But why?");
@@ -139,6 +141,8 @@ class Game {
     if (this.player.curRoom.hasEast()) {
       this.player.curRoom = this.player.curRoom.directions.east;
       this.player.curRoom.describe();
+      this.player.curRoom.visted = true;
+      console.log("Current room object: ", this.player.curRoom.x, this.player.curRoom.y);
       this.addManaCheck();
     } else {
       console.log("You have hit your nose on a wall.  But why?");
@@ -149,6 +153,8 @@ class Game {
     if (this.player.curRoom.hasWest) {
       this.player.curRoom = this.player.curRoom.directions.west;
       this.player.curRoom.describe();
+      this.player.curRoom.visted = true;
+      console.log("Current room object: ", this.player.curRoom.x, this.player.curRoom.y);
       this.addManaCheck();
     } else {
       console.log("You have hit your nose on a wall.  But why?");
@@ -213,7 +219,8 @@ class Game {
     if (this.player.inFight) {
       console.log(`In combat with ${this.player.fighting.name}!`);
     }
-    console.l
+    this.dungeon.drawMap();
+
     options = this.adventurerOptions;
     if (this.player.curRoom == null)
       this.player.curRoom = this.dungeon.entrance;
