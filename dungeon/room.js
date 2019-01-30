@@ -9,6 +9,7 @@ class Room {
     this.treasures = [];
     this.monsters = [];
     this.stuff = [];
+    this.mana = 0;
     this.traps = [];
     this.directions = {
       east: null,
@@ -27,6 +28,7 @@ class Room {
     this.monsters.push(Util.getRandomProp(Monster.monster_options));
     this.attributes.push(Util.getRandom(Room.attrs));
     this.stuff.push(Util.getRandomProp(Room.stuff_options));
+    this.mana = 10 + Math.floor(Math.random() * 10);
   }
 
   hasNorth() {
