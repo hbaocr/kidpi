@@ -8,6 +8,7 @@ class Adventurer {
     this.name = "unset";
     this.type = "unset";
     this.armor = 0;
+    this.baseArmor = 0;
     this.strength = 0;
     this.speed = 0;
     this.health = 10;
@@ -45,6 +46,7 @@ class Adventurer {
             "Rogue":(value) => {
               this.type = value;
               this.armor = 1;
+              this.baseArmor = 1;
               this.strength = 2;
               this.speed = 4;
               this.mana = 0;
@@ -54,6 +56,7 @@ class Adventurer {
             "Wizard": (value) => {
               this.type = value;
               this.armor = 0;
+              this.baseArmor = 0;
               this.strength = 2;
               this.speed = 3;
               this.mana = 30;
@@ -65,6 +68,7 @@ class Adventurer {
             "Archer": (value) => {
               this.type = value;
               this.armor = 2;
+              this.baseArmor = 2;
               this.strength = 3;
               this.speed = 2;
               this.mana = 0;
@@ -74,6 +78,7 @@ class Adventurer {
             "Fighter": (value) => {
               this.type = value;
               this.armor = 3;
+              this.baseArmor = 3;
               this.strength = 3;
               this.speed = 1;
               this.mana = 0;
@@ -201,6 +206,10 @@ class Adventurer {
         this.inFight = false;
         this.curRoom.monsters = [];
         console.log("You have vanquished " + this.fighting.name + "!!!");
+        if (this.fighting.hasLoot) {
+          console.log(`${this.fighting.name} drops ${this.fighting.loot.name}`);
+          this.curRoom.stuff.push(this.fighting.loot);
+        }
         setTimeout(() => { cb(); }, 3000);
       } else {
         setTimeout(() => {
@@ -317,6 +326,13 @@ class Adventurer {
     } else {
       console.log("All done.");
       this.surveyCallback();
+    }
+  }
+
+  updateStats() {
+    for (let i = 0; i < this.armorPieces.length; i++) {
+      let curArmor = this.armorPieces[i];
+      this.armor = this.baseArmor + curArmor.defense;
     }
   }
 }

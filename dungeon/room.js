@@ -59,6 +59,10 @@ class Room {
     return this.monsters.length != 0;
   }
 
+  hasStuff() {
+    return this.stuff.length != 0;
+  }
+
   describe() {
     let desc = "The room is " + this.attributes[0].attr;
     if (this.monsters.length) {

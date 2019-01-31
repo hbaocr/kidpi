@@ -1,5 +1,6 @@
 var Util = require('./util.js');
 var Weapon = require('./weapon.js').Weapon;
+var Armor = require('./armor.js').Armor;
 
 class Monster {
   constructor(name, health, armor, strength, speed, lootClass, weapons) {
@@ -10,6 +11,7 @@ class Monster {
     this.speed = speed;
     this.lootClass = lootClass;
     this.weapons = weapons;
+    this.hasLoot = false;
   }
 
   createRandom() {
@@ -27,26 +29,52 @@ class Monster {
       whichOption.lootClass,
       whichOption.weapons
     );
+
+    let hasLoot = (Math.random() * 100 > 20);
+    if (true) {
+      monster.hasLoot = true;
+      let lootItemOption = Util.getRandom(Monster.lootClass[monster.lootClass]);
+      let loot = new Armor().create(lootItemOption);
+      monster.loot = loot;
+    }
+
     return monster;
   }
 }
 
 Monster.lootClass = {
   "junk" : [
-    "rusty knife",
-    "leather glove",
-    "dirty rag",
-    "rotten meat",
+    Armor.options.snot_helm,
+    Armor.options.snot_jerkin,
+    Armor.options.snot_pants,
+    Armor.options.snot_gloves,
+    Armor.options.snot_boots,
   ],
   "low" : [
-    "knife",
-    "leather helmet",
+    Armor.options.leather_helm,
+    Armor.options.leather_jerkin,
+    Armor.options.leather_pants,
+    Armor.options.leather_gloves,
+    Armor.options.leather_boots,
   ],
   "mid" : [
+    Armor.options.iron_helm,
+    Armor.options.iron_chestplate,
+    Armor.options.iron_pants,
+    Armor.options.iron_gauntlets,
+    Armor.options.iron_boots,
   ],
   "high" : [
+    Armor.options.demonic_helm,
+    Armor.options.demonic_pants,
+    Armor.options.demonic_gauntlets,
   ],
   "rare" : [
+    Armor.options.demonic_helm,
+    Armor.options.demonic_chestplate,
+    Armor.options.demonic_pants,
+    Armor.options.demonic_gauntlets,
+    Armor.options.demonic_boots,
   ],
   "exceptional" : [
   ],
@@ -132,7 +160,7 @@ Monster.monster_options = {
     strength: 6,
     speed: 3,
     manaPerTurn : 1,
-    lootClass: "exceptional",
+    lootClass: "rare",
     weapons : [new Weapon("teeth", "teeth", "-", "-", null, 4), new Weapon("claws", "claws", "claws", "", null, 6), new Weapon("whip", "whip", "", "whip", null, 9)]
   },
 }

@@ -1,5 +1,6 @@
 var Util = require('./util.js');
 var Room = require('./room.js').Room;
+var Armor = require('./armor.js').Armor;
 var Dungeon = require('./dungeon.js').Dungeon;
 var DungeonCore = require('./dungeon.js').DungeonCore;
 var Adventurer = require('./adventurer.js').Adventurer;
@@ -27,6 +28,7 @@ class Game {
     this.adventurerOptions = [
       {name: "Look", action: () => { this.buildRoom() }},
       {name: "Inspect", action: () => { this.player.curRoom.describe(); }},
+      {name: "Pickup", viable: () => {return this.player.curRoom.hasStuff();}, action: () => { this.getStuff() }},
       {name: "Go north", viable: () => {return this.player.curRoom.hasNorth();}, action: () => { this.goNorth() }},
       {name: "Go south", viable: () => {return this.player.curRoom.hasSouth();}, action: () => { this.goSouth() }},
       {name: "Go east", viable: () => {return this.player.curRoom.hasEast();}, action: () => { this.goEast() }},
@@ -181,6 +183,19 @@ class Game {
     });
   }
 
+  getStuff(cb) {
+    for (let i = 0; i < this.player.curRoom.stuff.length; i++) {
+      let curItem = this.player.curRoom.stuff[i];
+      console.log("You picked up a " + curItem.name);
+      if (curItem instanceof Armor) {
+        this.player.armorPieces.push(curItem);
+      }
+    }
+
+    this.player.curRoom.stuff = [];
+    this.player.updateStats();
+  }
+
   chooseRole() {
     console.log();
     console.log("Which role would you like to fulfill?");
@@ -215,7 +230,7 @@ class Game {
 
     let options = this.coreOptions;
     let isAdventurer = false;
-    console.log(`Stats: ${this.player.name} has ${this.player.health} health ${this.player.mana} mana and is carrying a ${this.player.weapons[0].name}.`);
+    console.log(`Stats: ${this.player.name} has ${this.player.health} health ${this.player.mana} mana and is carrying a ${this.player.weapons[0].name} and has ${this.player.armor} defense.`);
     if (this.player.inFight) {
       console.log(`In combat with ${this.player.fighting.name}!`);
     }
