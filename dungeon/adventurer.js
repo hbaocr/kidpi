@@ -330,10 +330,12 @@ class Adventurer {
   }
 
   updateStats() {
+    let armor = this.baseArmor;
     for (let i = 0; i < this.armorPieces.length; i++) {
       let curArmor = this.armorPieces[i];
-      this.armor = this.baseArmor + curArmor.defense;
+      armor += curArmor.defense;
     }
+    this.armor = armor;
   }
 }
 

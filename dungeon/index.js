@@ -186,9 +186,11 @@ class Game {
   getStuff(cb) {
     for (let i = 0; i < this.player.curRoom.stuff.length; i++) {
       let curItem = this.player.curRoom.stuff[i];
-      console.log("You picked up a " + curItem.name);
-      if (curItem instanceof Armor) {
-        this.player.armorPieces.push(curItem);
+      if (curItem && curItem.name) {
+        console.log("You picked up a " + curItem.name);
+        if (curItem instanceof Armor) {
+          this.player.armorPieces.push(curItem);
+        }
       }
     }
 
