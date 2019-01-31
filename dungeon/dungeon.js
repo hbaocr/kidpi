@@ -1,7 +1,8 @@
 var Room = require("./room.js").Room;
 var Util = require("./util.js");
 class Dungeon {
-  constructor() {
+  constructor(game) {
+    this.game = game;
     this.name= "unset";
     this.type = "unset";
     this.rooms = [];
@@ -20,7 +21,7 @@ class Dungeon {
     let buildPosY = 0;
     prevRoom.x = buildPosX;
     prevRoom.y = buildPosY;
-    this.roomGrid[buildPosX][buildPosY] = this.entrance;
+    this.roomGrid[buildPosY][buildPosX] = this.entrance;
 
     this.lastRoomX = Math.floor(this.roomFactor/2 + (Math.random() * (this.roomFactor/2)));
     this.lastRoomY = Math.floor(this.roomFactor/2 + (Math.random() * (this.roomFactor/2)));
@@ -32,8 +33,10 @@ class Dungeon {
       }
       let direction = Math.floor(Math.random() * 4);
       let compassDir = "";
+      let prevPosition = [buildPosX, buildPosY];
+
       if (direction == 0) {
-        buildPosY++;
+        buildPosY--;
         compassDir = "north";
       } else if (direction == 1) {
         buildPosX++;
@@ -42,31 +45,42 @@ class Dungeon {
         buildPosX--;
         compassDir = "west";
       } else if (direction == 3) {
-        buildPosY--;
+        buildPosY++;
         compassDir = "south";
       }
 
       if (buildPosY > this.roomFactor - 1) {
-        buildPosY = this.roomFactor - 1;
+        buildPosY = prevPosition[1];
+        continue;
       }
 
-      if (buildPosY < 0) { buildPosY = 0; }
+      if (buildPosY < 0) {
+        buildPosY = prevPosition[1];
+        continue;
+      }
 
       if (buildPosX > this.roomFactor - 1) {
-        buildPosX = this.roomFactor - 1;
+        buildPosX = prevPosition[0];
+        continue;
       }
 
-      if (buildPosX < 0) { buildPosX = 0; }
+      if (buildPosX < 0) {
+        buildPosX = prevPosition[0];
+        continue;
+      }
 
-      if (this.roomGrid[buildPosX][buildPosY] == null) {
+      prevRoom = this.roomGrid[prevPosition[1]][prevPosition[0]];
+      if (this.roomGrid[buildPosY][buildPosX] == null) {
         let room = new Room();
         room.randomize();
         room.x = buildPosX;
         room.y = buildPosY;
-        room.directions[compassDir] = prevRoom;
-        this.roomGrid[buildPosX][buildPosY] = room;
+        prevRoom.directions[compassDir] = room;
+        this.roomGrid[buildPosY][buildPosX] = room;
         this.rooms.push(room);
-        prevRoom.directions[Util.getOppositeDirection(compassDir)] = room;
+        room.directions[Util.getOppositeDirection(compassDir)] = prevRoom;
+
+        //Keep going.
         prevRoom = room;
       }
     }
@@ -77,13 +91,20 @@ class Dungeon {
     for (let i = 0; i < this.roomFactor; i++) {
       let rowDesc = "";
       for (let j = 0; j < this.roomFactor; j++) {
-        if (this.roomGrid[i][j] && this.roomGrid[i][j].visited) {
+        let player = null;
+        if (this.game && this.game.player) {
+          player = this.game.player;
+        }
+        if (player && player.curRoom && this.roomGrid[i][j] == player.curRoom) {
+          rowDesc += "A";
+        } else if (this.roomGrid[i][j] && this.roomGrid[i][j].visited) {
           rowDesc += "X";
         } else if (this.roomGrid[i][j]) {
           rowDesc += "*";
         } else {
           rowDesc += ".";
         }
+
       }
       console.log(rowDesc);
     }
@@ -100,57 +121,7 @@ class Dungeon {
   }
 
   describe() {
-    console.log("The room is: ");
-    let curRoom = this.entrance;
-    let path = "";
-    let prevRoom = this.entrance;
-    this.entrance.visited = true;
-    while(curRoom.directions.east ||
-      curRoom.directions.west||
-      curRoom.directions.north||
-      curRoom.directions.south) {
-
-      let found = false;
-      if (curRoom.directions.east && !curRoom.directions.east.visted) {
-        console.log("Going East");
-        curRoom = curRoom.directions.east;
-        curRoom.visted = true;
-        found = true;
-        path += "<-";
-      }
-
-      if (curRoom.directions.west && !curRoom.directions.west.visted) {
-        console.log("Going West");
-        curRoom = curRoom.directions.west;
-        curRoom.visted = true;
-        found = true;
-        path += "->";
-      }
-
-      if (curRoom.directions.north && !curRoom.directions.north.visted) {
-        console.log("Going North");
-        curRoom = curRoom.directions.north;
-        curRoom.visted = true;
-        found = true;
-        path += "^";
-      }
-
-      if (curRoom.directions.south && !curRoom.directions.south.visted) {
-        console.log("Going South");
-        curRoom = curRoom.directions.south;
-        curRoom.visted = true;
-        found = true;
-        path += "v";
-      }
-
-      if (found) {
-        curRoom.describe();
-      } else {
-        break;
-      }
-
-    }
-    console.log(path);
+    console.log("The dungeon is dangerous.");
   }
 }
 

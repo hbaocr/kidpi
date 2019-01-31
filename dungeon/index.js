@@ -119,7 +119,7 @@ class Game {
     if (this.player.curRoom.hasNorth()) {
       this.player.curRoom = this.player.curRoom.directions.north;
       this.player.curRoom.describe();
-      this.player.curRoom.visted = true;
+      this.player.curRoom.visited = true;
       this.addManaCheck();
     } else {
       console.log("You have hit your nose on a wall.  But why?");
@@ -130,7 +130,7 @@ class Game {
     if (this.player.curRoom.hasSouth()) {
       this.player.curRoom = this.player.curRoom.directions.south;
       this.player.curRoom.describe();
-      this.player.curRoom.visted = true;
+      this.player.curRoom.visited = true;
       this.addManaCheck();
     } else {
       console.log("You have hit your nose on a wall.  But why?");
@@ -141,7 +141,7 @@ class Game {
     if (this.player.curRoom.hasEast()) {
       this.player.curRoom = this.player.curRoom.directions.east;
       this.player.curRoom.describe();
-      this.player.curRoom.visted = true;
+      this.player.curRoom.visited = true;
       console.log("Current room object: ", this.player.curRoom.x, this.player.curRoom.y);
       this.addManaCheck();
     } else {
@@ -153,7 +153,7 @@ class Game {
     if (this.player.curRoom.hasWest) {
       this.player.curRoom = this.player.curRoom.directions.west;
       this.player.curRoom.describe();
-      this.player.curRoom.visted = true;
+      this.player.curRoom.visited = true;
       console.log("Current room object: ", this.player.curRoom.x, this.player.curRoom.y);
       this.addManaCheck();
     } else {
@@ -161,7 +161,7 @@ class Game {
     }
   }
 
-  handleCharge() {
+  handleCharge(cb) {
     out("You have decided to enage the " + this.player.curRoom.monsters[0].name + " with your " +
         this.player.weapons[0].name);
     this.player.inFight = true;
