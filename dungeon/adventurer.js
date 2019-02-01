@@ -87,6 +87,16 @@ class Adventurer {
               this.mana = 0;
               this.weapons[0] = new Weapon("short sword", "stabby", "", "short sword", null, 3);
               this.nextQuestion();
+            },
+            "hidden": (value) => {
+              this.type = value;
+              this.armor = 3;
+              this.baseArmor = 30;
+              this.strength = 30;
+              this.speed = 30;
+              this.mana = 0;
+              this.weapons[0] = new Weapon("short sword", "stabby", "", "short sword", null, 30);
+              this.nextQuestion();
             }
           }
       }, {
@@ -352,12 +362,16 @@ class Adventurer {
 
         optionCt++
 
-        if (o != "any") {
+        if (o != "any" && o != "hidden") {
           options += optionCt + ": ";
           curQuestion.answers[o].optionCt = optionCt;
         }
 
-        options += o;
+        if (o == "hidden") {
+          curQuestion.answers[o].optionCt = optionCt;
+        } else {
+          options += o;
+        }
       }
 
       options += ")";
@@ -429,7 +443,7 @@ class Adventurer {
 
       for (let i = armorType.max; i < typePieces.length; i++) {
         console.log(`Moving ${typePieces[i].name} to your backpack.`);
-        this.backpack.push[typePieces[i]];
+        this.backpack.push(typePieces[i]);
       }
       typePieces.length = armorType.max;
     }
@@ -451,6 +465,17 @@ class Adventurer {
     this.armor = armor;
     if (cb) {
       cb();
+    }
+  }
+
+  inspectBackpack(cb) {
+    console.log(`Your backpack has:`);
+    for (let i = 0; i < this.backpack.length; i++) {
+      console.log(`${this.backpack[i].name}`);
+    }
+
+    if (cb) { 
+      setTimeout(cb, 3000);
     }
   }
 }
