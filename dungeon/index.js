@@ -48,13 +48,13 @@ class Game {
       {name: "Shoot", action: () => { this.handleShooting() }},
       {name: "Throw", action: () => { this.handleThrow() }},
       {name: "Communicate", action: () => { this.handleCommunication() }},
-      {name: "Run Away", action: () => { this.handleRunAway() }},
+      {name: "Run Away", viable: () => { return this.player.inFight; }, action: (cb) => { this.handleRunAway(cb) }},
     ];
 
     this.adventurerFightOptions = [
       {name: "Attack", action: (cb) => { this.handleAttack(cb); return true; }},
       {name: "Cast", viable: () => { return this.player.type == "wizard"; }, action: (cb) => { this.handleSpell(cb); return true; }},
-      {name: "Run Away", viable: () => { return true; }, action: () => { this.handleRun() }},
+      {name: "Run Away", viable: () => { return this.player.inFight; }, action: (cb) => { this.handleRunAway(cb) }},
     ];
 
     this.dungeon = new Dungeon(this);
@@ -118,49 +118,23 @@ class Game {
   }
 
   goNorth() {
-    if (this.player.curRoom.hasNorth()) {
-      this.player.curRoom = this.player.curRoom.directions.north;
-      this.player.curRoom.describe();
-      this.player.curRoom.visited = true;
-      this.addManaCheck();
-    } else {
-      console.log("You have hit your nose on a wall.  But why?");
-    }
+    this.player.goNorth();
+    this.addManaCheck();
   }
 
   goSouth() {
-    if (this.player.curRoom.hasSouth()) {
-      this.player.curRoom = this.player.curRoom.directions.south;
-      this.player.curRoom.describe();
-      this.player.curRoom.visited = true;
-      this.addManaCheck();
-    } else {
-      console.log("You have hit your nose on a wall.  But why?");
-    }
+    this.player.goSouth();
+    this.addManaCheck();
   }
 
   goEast() {
-    if (this.player.curRoom.hasEast()) {
-      this.player.curRoom = this.player.curRoom.directions.east;
-      this.player.curRoom.describe();
-      this.player.curRoom.visited = true;
-      console.log("Current room object: ", this.player.curRoom.x, this.player.curRoom.y);
-      this.addManaCheck();
-    } else {
-      console.log("You have hit your nose on a wall.  But why?");
-    }
+    this.player.goEast();
+    this.addManaCheck();
   }
 
   goWest() {
-    if (this.player.curRoom.hasWest) {
-      this.player.curRoom = this.player.curRoom.directions.west;
-      this.player.curRoom.describe();
-      this.player.curRoom.visited = true;
-      console.log("Current room object: ", this.player.curRoom.x, this.player.curRoom.y);
-      this.addManaCheck();
-    } else {
-      console.log("You have hit your nose on a wall.  But why?");
-    }
+    this.player.goWest();
+    this.addManaCheck();
   }
 
   handleCharge(cb) {
@@ -179,6 +153,12 @@ class Game {
 
   handleAttack(cb) {
     this.player.attack(()=>{
+      cb();
+    });
+  }
+
+  handleRunAway(cb) {
+    this.player.runAway(() => {
       cb();
     });
   }
@@ -233,7 +213,7 @@ class Game {
     let options = this.coreOptions;
     let isAdventurer = false;
     console.log(`Stats: ${this.player.name} has ${this.player.health} health ${this.player.mana} mana and is carrying a ${this.player.weapons[0].name} and has ${this.player.armor} defense.`);
-    if (this.player.inFight) {
+    if (this.player.fighting) {
       console.log(`In combat with ${this.player.fighting.name}!`);
     }
     this.dungeon.drawMap();

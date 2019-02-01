@@ -14,6 +14,7 @@ class Adventurer {
     this.health = 10;
     this.mana = 0;
     this.curRoom = null;
+    this.prevRoom = null;
     this.inFight = false;
     this.fighting = null; // Which monster is currently engaged.
 
@@ -235,6 +236,66 @@ class Adventurer {
       setTimeout(() => {
         this.monsterAttack(cb);
       }, 1000);
+    }
+  }
+
+  runAway(cb) {
+    // Check to see of the monster stops us.
+    if (Util.hitCheck(this.fighting.speed, this.speed)) {
+      console.log("The monster stopped you!!!");
+      this.monsterAttack(cb);
+    } else {
+      console.log("You escaped!!!");
+      this.inFight = false;
+      this.fighting = null;
+      this.curRoom = this.prevRoom;
+    }
+    cb();
+  }
+
+  goNorth() {
+    if (this.curRoom.hasNorth()) {
+      this.prevRoom = this.curRoom;
+      this.curRoom = this.curRoom.directions.north;
+      this.curRoom.describe();
+      this.curRoom.visited = true;
+    } else {
+      console.log("You have hit your nose on a wall.  But why?");
+    }
+  }
+
+  goSouth() {
+    if (this.curRoom.hasSouth()) {
+      this.prevRoom = this.curRoom;
+      this.curRoom = this.curRoom.directions.south;
+      this.curRoom.describe();
+      this.curRoom.visited = true;
+    } else {
+      console.log("You have hit your nose on a wall.  But why?");
+    }
+  }
+
+  goEast() {
+    if (this.curRoom.hasEast()) {
+      this.prevRoom = this.curRoom;
+      this.curRoom = this.curRoom.directions.east;
+      this.curRoom.describe();
+      this.curRoom.visited = true;
+      console.log("Current room object: ", this.curRoom.x, this.curRoom.y);
+    } else {
+      console.log("You have hit your nose on a wall.  But why?");
+    }
+  }
+
+  goWest() {
+    if (this.curRoom.hasWest) {
+      this.prevRoom = this.curRoom;
+      this.curRoom = this.curRoom.directions.west;
+      this.curRoom.describe();
+      this.curRoom.visited = true;
+      console.log("Current room object: ", this.curRoom.x, this.curRoom.y);
+    } else {
+      console.log("You have hit your nose on a wall.  But why?");
     }
   }
 
