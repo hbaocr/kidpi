@@ -26,9 +26,8 @@ class Game {
     ];
 
     this.adventurerOptions = [
-      {name: "Look", action: () => { this.buildRoom() }},
       {name: "Inspect", action: () => { this.player.curRoom.describe(); }},
-      {name: "Pickup", viable: () => {return this.player.curRoom.hasStuff();}, action: () => { this.getStuff() }},
+      {name: "Pickup", viable: () => {return this.player.curRoom.hasStuff();}, action: (cb) => { return this.getStuff(cb); }},
       {name: "Go north", viable: () => {return this.player.curRoom.hasNorth();}, action: () => { this.goNorth() }},
       {name: "Go south", viable: () => {return this.player.curRoom.hasSouth();}, action: () => { this.goSouth() }},
       {name: "Go east", viable: () => {return this.player.curRoom.hasEast();}, action: () => { this.goEast() }},
@@ -168,14 +167,12 @@ class Game {
       let curItem = this.player.curRoom.stuff[i];
       if (curItem && curItem.name) {
         console.log("You picked up a " + curItem.name);
-        if (curItem instanceof Armor) {
-          this.player.armorPieces.push(curItem);
-        }
+        this.player.addStuff(curItem, cb);
       }
     }
 
     this.player.curRoom.stuff = [];
-    this.player.updateStats();
+    return true;
   }
 
   chooseRole() {

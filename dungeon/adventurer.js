@@ -1,6 +1,7 @@
 var Util = require('./util.js');
 var Weapon = require('./weapon.js').Weapon;
 var Spell = require('./spells.js').Spell;
+var Armor = require('./armor.js').Armor;
 
 class Adventurer {
   constructor(game) {
@@ -21,6 +22,7 @@ class Adventurer {
     this.armorPieces = [];
     this.weapons = [];
     this.spells = [];
+    this.backpack = [];
 
     this.curBuildQuestion = 0;
     this.buildQuestions = [
@@ -390,13 +392,66 @@ class Adventurer {
     }
   }
 
-  updateStats() {
+  addStuff(stuff, cb) {
+    if (stuff instanceof Armor) {
+      this.addArmor(stuff, () => {});
+    }
+
+    this.updateStats();
+    setTimeout(cb, 4000);
+  }
+
+
+  addArmor(stuff, cb) {
+    console.log("Adding armor item:", stuff.name);
+    let armorType = stuff.type;
+    let typeCt = 0;
+    let typePieces = [stuff];
+    let nonTypePieces = [];
+    for (let i = 0; i < this.armorPieces.length; i++) {
+      let curPiece = this.armorPieces[i];
+      if (curPiece.type == stuff.type) {
+        typeCt++;
+        typePieces.push(curPiece);
+      } else {
+        nonTypePieces.push(curPiece);
+      }
+    }
+
+    if (typeCt + 1 > armorType.max) {
+      // Can't wear two helmets.
+      console.log(`You have multiple ${armorType.name} options selecting the best.`);
+
+      // Find the one that is stronger.
+      typePieces.sort((a,b) => {
+        return b.defense - a.defense;
+      });
+
+      for (let i = armorType.max; i < typePieces.length; i++) {
+        console.log(`Moving ${typePieces[i].name} to your backpack.`);
+        this.backpack.push[typePieces[i]];
+      }
+      typePieces.length = armorType.max;
+    }
+
+    // Put all the armor back in.
+    this.armorPieces = [].concat(nonTypePieces).concat(typePieces);
+    console.log("You are now wearing:");
+    for (let i = 0; i < this.armorPieces.length; i++) {
+      console.log(`${this.armorPieces[i].name} and it provides ${this.armorPieces[i].defense} defense.`);
+    }
+  }
+
+  updateStats(cb) {
     let armor = this.baseArmor;
     for (let i = 0; i < this.armorPieces.length; i++) {
       let curArmor = this.armorPieces[i];
       armor += curArmor.defense;
     }
     this.armor = armor;
+    if (cb) {
+      cb();
+    }
   }
 }
 
