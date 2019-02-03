@@ -83,7 +83,7 @@ class Adventurer {
               this.armor = 3;
               this.baseArmor = 3;
               this.strength = 3;
-              this.speed = 1;
+              this.speed = 2;
               this.mana = 0;
               this.weapons[0] = new Weapon("fists", "blunt", "-", "-", null, 1);
               this.nextQuestion();
@@ -146,7 +146,9 @@ class Adventurer {
         }
 
         // Checking monsters armor.
-        damage = damage - Math.floor(Math.random() * this.fighting.armor);
+        let armorSave = Math.floor(Math.random() * this.fighting.armor);
+        console.log(`Damage before armor save: ${damage}, armor save: ${armorSave}`);
+        damage = damage - armorSave;
 
         if (damage <= 0) {
           console.log("\nYour blow is deflected by the monsters armor!");
@@ -154,11 +156,7 @@ class Adventurer {
           console.log("\nIt does " + damage + " damage to " + this.fighting.name);
         }
 
-        if (spell) {
-          this.fighting.health -= this.spells[0].effect;
-        } else {
-          this.fighting.health -= this.weapons[0].damage;
-        }
+        this.fighting.health -= damage;
         console.log(this.fighting.name + " has " + this.fighting.health + " health left!");
       } else {
         console.log("\n\n\nOh no! You missed!!");
