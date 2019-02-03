@@ -163,6 +163,27 @@ Monster.monster_options = {
     lootClass: "rare",
     weapons : [new Weapon("teeth", "teeth", "-", "-", null, 4), new Weapon("claws", "claws", "claws", "", null, 6), new Weapon("whip", "whip", "", "whip", null, 9)]
   },
+  troll: {
+    name:"troll",
+    health: 20,
+    armor : 10,
+    strength: 10,
+    speed: 1,
+    manaPerTurn : 0,
+    lootClass: "low",
+    weapons : [new Weapon("massive cudgle", "blunt", "-", "-", null, 9)]
+  },
+  bog_stomper: {
+    name:"bog stomper",
+    health: 10,
+    armor : 8,
+    strength: 6,
+    speed: 3,
+    manaPerTurn : 0,
+    mana : 40,
+    lootClass: "mid",
+    weapon: [new Weapon("ranced breath", "poison", "-", "-", null, 6),new Weapon("big feet", "stompy", "-", "-", null, 4)]
+  },
 }
 
 module.exports.Monster = Monster;

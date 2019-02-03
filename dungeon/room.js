@@ -8,7 +8,8 @@ class Room {
     this.type = "unset";
     this.treasures = [];
     this.monsters = [];
-    this.stuff = [];
+    this.stuff = []; // Decor
+    this.loot = []; // Things dropped by monsters.
     this.mana = 0;
     this.traps = [];
     this.directions = {
@@ -25,7 +26,10 @@ class Room {
 
   randomize() {
     this.name = Math.floor(Math.random() * 1000000);
-    this.monsters.push((new Monster()).createRandom());
+    let monsterChance = Math.random() * 100;
+    if (monsterChance <= 60) {
+      this.monsters.push((new Monster()).createRandom());
+    }
     this.attributes.push(Util.getRandom(Room.attrs));
     this.stuff.push(Util.getRandomProp(Room.stuff_options));
     this.mana = 10 + Math.floor(Math.random() * 10);
@@ -61,6 +65,10 @@ class Room {
 
   hasStuff() {
     return this.stuff.length != 0;
+  }
+
+  hasLoot() {
+    return this.loot.length != 0;
   }
 
   describe() {

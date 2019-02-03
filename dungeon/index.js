@@ -27,7 +27,7 @@ class Game {
 
     this.adventurerOptions = [
       {name: "Inspect", action: () => { this.player.curRoom.describe(); }},
-      {name: "Pickup", viable: () => {return this.player.curRoom.hasStuff();}, action: (cb) => { return this.getStuff(cb); }},
+      {name: "Pickup", viable: () => {return this.player.curRoom.hasLoot();}, action: (cb) => { return this.getLoot(cb); }},
       {name: "Go north", viable: () => {return this.player.curRoom.hasNorth();}, action: () => { this.goNorth() }},
       {name: "Go south", viable: () => {return this.player.curRoom.hasSouth();}, action: () => { this.goSouth() }},
       {name: "Go east", viable: () => {return this.player.curRoom.hasEast();}, action: () => { this.goEast() }},
@@ -163,16 +163,16 @@ class Game {
     });
   }
 
-  getStuff(cb) {
-    for (let i = 0; i < this.player.curRoom.stuff.length; i++) {
-      let curItem = this.player.curRoom.stuff[i];
+  getLoot(cb) {
+    for (let i = 0; i < this.player.curRoom.loot.length; i++) {
+      let curItem = this.player.curRoom.loot[i];
       if (curItem && curItem.name) {
         console.log("You picked up a " + curItem.name);
-        this.player.addStuff(curItem, cb);
+        this.player.addLoot(curItem, cb);
       }
     }
 
-    this.player.curRoom.stuff = [];
+    this.player.curRoom.loot = [];
     return true;
   }
 

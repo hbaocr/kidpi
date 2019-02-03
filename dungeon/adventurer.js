@@ -140,12 +140,20 @@ class Adventurer {
     setTimeout(() => {
       if (Util.hitCheck((spell ? spell.focus : this.speed), this.fighting.speed)) {
         console.log("\n\n\nHit!!");
-        let damage = this.weapons[0].damage;
+        let damage = this.weapons[0].damage * (Math.floor(Math.random() * this.strength));
         if (spell) {
           damage = spell.effect;
         }
 
-        console.log("\nIt does " + damage + " damage to " + this.fighting.name);
+        // Checking monsters armor.
+        damage = damage - Math.floor(Math.random() * this.fighting.armor);
+
+        if (damage <= 0) {
+          console.log("\nYour blow is deflected by the monsters armor!");
+        } else {
+          console.log("\nIt does " + damage + " damage to " + this.fighting.name);
+        }
+
         if (spell) {
           this.fighting.health -= this.spells[0].effect;
         } else {
@@ -167,7 +175,9 @@ class Adventurer {
     console.log(`${this.fighting.name} sizes you up and swings with his ${weapon.name}...`);
     setTimeout(() => {
       if (Util.hitCheck(this.fighting.speed, this.speed)) {
-        let damage = weapon.damage - Math.floor(Math.random() * this.armor);
+        let damage = weapon.damage * (Math.floor(Math.random() * this.fighting.strength));;
+        damage = damage - Math.floor(Math.random() * this.armor);
+
         if (damage <= 0) {
           damage = 0;
           console.log("Your armor deflected his blow!  No damage!!!");
@@ -221,7 +231,7 @@ class Adventurer {
         console.log("You have vanquished " + this.fighting.name + "!!!");
         if (this.fighting.hasLoot) {
           console.log(`${this.fighting.name} drops ${this.fighting.loot.name}`);
-          this.curRoom.stuff.push(this.fighting.loot);
+          this.curRoom.loot.push(this.fighting.loot);
         }
         setTimeout(() => { cb(); }, 3000);
       } else {
@@ -406,9 +416,13 @@ class Adventurer {
     }
   }
 
-  addStuff(stuff, cb) {
-    if (stuff instanceof Armor) {
-      this.addArmor(stuff, () => {});
+  addLoot(loot, cb) {
+    if (loot instanceof Armor) {
+      this.addArmor(loot, () => {});
+    }
+
+    if (loot instanceof Weapon) {
+      this.addWeapon(loot, () => {});
     }
 
     this.updateStats();
@@ -416,15 +430,15 @@ class Adventurer {
   }
 
 
-  addArmor(stuff, cb) {
-    console.log("Adding armor item:", stuff.name);
-    let armorType = stuff.type;
+  addArmor(loot, cb) {
+    console.log("Adding armor item:", loot.name);
+    let armorType = loot.type;
     let typeCt = 0;
-    let typePieces = [stuff];
+    let typePieces = [loot];
     let nonTypePieces = [];
     for (let i = 0; i < this.armorPieces.length; i++) {
       let curPiece = this.armorPieces[i];
-      if (curPiece.type == stuff.type) {
+      if (curPiece.type == loot.type) {
         typeCt++;
         typePieces.push(curPiece);
       } else {

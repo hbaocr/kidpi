@@ -41,4 +41,9 @@ class Weapon {
   }
 }
 
+Weapon.options = {
+  snot_whip: new Weapon("snot whip", "acid", "-", "-", null, 1),
+
+}
+
 module.exports.Weapon = Weapon;
