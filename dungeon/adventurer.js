@@ -53,7 +53,7 @@ class Adventurer {
               this.strength = 2;
               this.speed = 4;
               this.mana = 0;
-              this.weapons[0] = new Weapon("daggers", "stabby", "dagger", "dagger", null, 2);
+              this.weapons[0] = new Weapon("fists", "blunt", "-", "-", null, 1);
               this.nextQuestion();
             },
             "Wizard": (value) => {
@@ -75,7 +75,7 @@ class Adventurer {
               this.strength = 3;
               this.speed = 2;
               this.mana = 0;
-              this.weapons[0] = new Weapon("bow", "bow", "-", "-", 30, 1);
+              this.weapons[0] = new Weapon("fists", "blunt", "-", "-", null, 1);
               this.nextQuestion();
             },
             "Fighter": (value) => {
@@ -85,7 +85,7 @@ class Adventurer {
               this.strength = 3;
               this.speed = 1;
               this.mana = 0;
-              this.weapons[0] = new Weapon("short sword", "stabby", "", "short sword", null, 3);
+              this.weapons[0] = new Weapon("fists", "blunt", "-", "-", null, 1);
               this.nextQuestion();
             },
             "hidden": (value) => {
@@ -95,7 +95,7 @@ class Adventurer {
               this.strength = 30;
               this.speed = 30;
               this.mana = 0;
-              this.weapons[0] = new Weapon("short sword", "stabby", "", "short sword", null, 30);
+              this.weapons[0] = new Weapon("short sword", "stabby", "", "short sword", null, 1);
               this.nextQuestion();
             }
           }
@@ -417,6 +417,8 @@ class Adventurer {
   }
 
   addLoot(loot, cb) {
+    console.log("Loot is :", loot instanceof Armor);
+    console.log(loot);
     if (loot instanceof Armor) {
       this.addArmor(loot, () => {});
     }
@@ -429,8 +431,54 @@ class Adventurer {
     setTimeout(cb, 4000);
   }
 
+  addWeapon(loot, cb) {
+    if (!(loot instanceof Weapon)) {
+      return;
+    }
+    console.log("Adding weapon item:", loot.name);
+    let weaponType = loot.type;
+    let typeCt = 0;
+    let typePieces = [loot];
+    let nonTypePieces = [];
+    for (let i = 0; i < this.weapons.length; i++) {
+      let curPiece = this.weapons[i];
+      if (curPiece.type == loot.type) {
+        typeCt++;
+        typePieces.push(curPiece);
+      } else {
+        nonTypePieces.push(curPiece);
+      }
+    }
+
+    if (typeCt + 1 > weaponType.max) {
+      // Can't wear two helmets.
+      console.log(`You have multiple ${weaponType.name} options selecting the best.`);
+
+      // Find the one that is stronger.
+      typePieces.sort((a,b) => {
+        return b.damage - a.damage;
+      });
+
+      for (let i = weaponType.max; i < typePieces.length; i++) {
+        console.log(`Moving ${typePieces[i].name} to your backpack.`);
+        this.backpack.push(typePieces[i]);
+      }
+      typePieces.length = weaponType.max;
+    }
+
+    // Put all the weapon back in.
+    this.weapons = [].concat(nonTypePieces).concat(typePieces);
+    console.log("You are now equiped with:");
+    for (let i = 0; i < this.weapons.length; i++) {
+      console.log(`${this.weapons[i].name} and it provides ${this.weapons[i].damage} damage.`);
+    }
+  }
+
 
   addArmor(loot, cb) {
+    if (!(loot instanceof Armor)) {
+      return;
+    }
     console.log("Adding armor item:", loot.name);
     let armorType = loot.type;
     let typeCt = 0;

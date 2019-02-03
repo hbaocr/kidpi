@@ -34,7 +34,12 @@ class Monster {
     if (true) {
       monster.hasLoot = true;
       let lootItemOption = Util.getRandom(Monster.lootClass[monster.lootClass]);
-      let loot = new Armor().create(lootItemOption);
+      let loot = null;
+      if (lootItemOption instanceof Armor) {
+        loot = new Armor().create(lootItemOption);
+      } else if (lootItemOption instanceof Weapon) {
+        loot = new Weapon().create(lootItemOption);
+      }
       monster.loot = loot;
     }
 
@@ -49,6 +54,11 @@ Monster.lootClass = {
     Armor.options.snot_pants,
     Armor.options.snot_gloves,
     Armor.options.snot_boots,
+    Weapon.options.snot_whip,
+    Weapon.options.rusty_dagger,
+    Weapon.options.bucket,
+    Weapon.options.rock,
+    Weapon.options.really_rusty_sword,
   ],
   "low" : [
     Armor.options.leather_helm,
@@ -56,6 +66,12 @@ Monster.lootClass = {
     Armor.options.leather_pants,
     Armor.options.leather_gloves,
     Armor.options.leather_boots,
+    Weapon.options.really_rusty_sword,
+    Weapon.options.rusty_dagger,
+    Weapon.options.spiked_club,
+    Weapon.options.axe,
+    Weapon.options.short_sword,
+    Weapon.options.extremely_stale_fruitcake,
   ],
   "mid" : [
     Armor.options.iron_helm,
@@ -63,11 +79,19 @@ Monster.lootClass = {
     Armor.options.iron_pants,
     Armor.options.iron_gauntlets,
     Armor.options.iron_boots,
+    Weapon.options.heavy_axe,
+    Weapon.options.sword,
+    Weapon.options.great_axe,
+    Weapon.options.bow,
   ],
   "high" : [
     Armor.options.demonic_helm,
     Armor.options.demonic_pants,
     Armor.options.demonic_gauntlets,
+    Weapon.options.great_axe,
+    Weapon.options.long_sword,
+    Weapon.options.massive_cudgle,
+    Weapon.options.massive_rock,
   ],
   "rare" : [
     Armor.options.demonic_helm,
@@ -75,6 +99,8 @@ Monster.lootClass = {
     Armor.options.demonic_pants,
     Armor.options.demonic_gauntlets,
     Armor.options.demonic_boots,
+    Weapon.options.fiery_longsword,
+    Weapon.options.demonclaw_dagger,
   ],
   "exceptional" : [
   ],
@@ -158,7 +184,7 @@ Monster.monster_options = {
     health: 15,
     armor : 10,
     strength: 6,
-    speed: 3,
+    speed: 4,
     manaPerTurn : 1,
     lootClass: "rare",
     weapons : [new Weapon("teeth", "teeth", "-", "-", null, 4), new Weapon("claws", "claws", "claws", "", null, 6), new Weapon("whip", "whip", "", "whip", null, 9)]
