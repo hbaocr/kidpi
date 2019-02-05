@@ -2,6 +2,8 @@ var Util = require('./util.js');
 var Weapon = require('./weapon.js').Weapon;
 var Spell = require('./spells.js').Spell;
 var Armor = require('./armor.js').Armor;
+var Scroll = require('./potion.js').Scroll;
+var Potion = require('./potion.js').Potion;
 
 class Adventurer {
   constructor(game) {
@@ -116,12 +118,12 @@ class Adventurer {
             },
             "Chronomancer": () => {
               this.wizardType = "time",
-              this.spells[0] = new Spell("Timetear", Spell.types.damaging, 5, 3, 5);
+              this.spells[0] = new Spell("Timetear", Spell.types.damaging, 4, 3, 5);
               this.nextQuestion();
             },
             "Necromancer": () => {
               this.wizardType = "death",
-              this.spells[0] = new Spell("Rot", Spell.types.damaging, 7, 3, 3);
+              this.spells[0] = new Spell("Rot", Spell.types.damaging, 5, 3, 3);
               this.nextQuestion();
             },
           }
@@ -240,23 +242,82 @@ class Adventurer {
     });
   }
 
-  cast(cb) {
-    let spell = this.spells[0];
-    if (spell.type == Spell.types.damaging || 
-      spell.type == "revealing") {
-      this.inFight = true;
-      this.fighting = this.curRoom.monsters[0];
+  buildSpellsMenu(cb) {
+    console.log("Which spell, potion or scroll would you like to use?");
+    for (let i = 0; i < this.spells.length; i++) {
+      console.log((i + 1) + ": ");
+      this.spells[i].describe();
     }
 
-    if (this.mana > spell.mana) {
-      this.mana -= spell.mana;
-      this.attack(cb, spell);
-    } else {
-      console.log("You attempt to cast " + spell.name + " but fail.");
-      setTimeout(() => {
-        this.monsterAttack(cb);
-      }, 1000);
+    Util.rl.question('\n\n>>', (answer) => {
+      let pickIndex = answer - 0;
+      if (pickIndex >= this.spells.length + 1) {
+        console.log("You don't have that many spells! Please try again.  Or enter 0 to cancel.");
+        setTimeout((cb) =>  { this.buildSpellsMenu(cb); }, 2000);
+      } else if (answer == "0") {
+        cb(null);
+      } else {
+        cb(this.spells[pickIndex - 1]);
+      }
+    });
+  }
+
+  removeSpells() {
+    let remainderSpells = [];
+    for (let i = 0; i < this.spells.length; i++) {
+      let spell = this.spells[i];
+      if ( spell instanceof Scroll || spell instanceof Potion ) {
+        if (this.spells[i].charges <= 0) {
+          continue;
+        } else {
+          remainderSpells.push(this.spells[i]);
+        }
+      } else {
+        remainderSpells.push(this.spells[i]);
+      }
     }
+    this.spells = remainderSpells;
+  }
+
+  cast(cb) {
+    this.buildSpellsMenu((spell) => {
+      if (spell == null) {
+        cb();
+        return;
+      }
+
+      if (spell.type == Spell.types.damaging || spell.type == "revealing") {
+        this.inFight = true;
+        this.fighting = this.curRoom.monsters[0];
+      }
+
+      if ( spell instanceof Scroll || spell instanceof Potion ) {
+        if (spell.charges >= 1) {
+          this.attack(() => {
+            spell.charges -= 1;
+            if (spell instanceof Scroll && this.type == "wizard") {
+              console.log("You have learned: ");
+              spell.charges = 0;
+              let newSpell = new Spell(spell.name, spell.type, spell.effect, spell.manaCost, spell.focus);
+              newSpell.describe();
+              this.spells.push(newSpell);
+            }
+            this.removeSpells();
+            cb();
+          }, spell);
+        }
+      } else {
+        if (this.mana > spell.mana) {
+          this.mana -= spell.mana;
+          this.attack(cb, spell);
+        } else {
+          console.log("You attempt to cast " + spell.name + " but fail.");
+          setTimeout(() => {
+            this.monsterAttack(cb);
+          }, 1000);
+        }
+      }
+    });
   }
 
   runAway(cb) {
@@ -423,6 +484,12 @@ class Adventurer {
 
     if (loot instanceof Weapon) {
       this.addWeapon(loot, () => {});
+    }
+
+    if ((loot instanceof Scroll) || (loot instanceof Potion)) {
+      console.log("You picked up: ");
+      loot.describe();
+      this.spells.push(loot);
     }
 
     this.updateStats();

@@ -1,6 +1,8 @@
 var Util = require('./util.js');
 var Weapon = require('./weapon.js').Weapon;
 var Armor = require('./armor.js').Armor;
+var Scroll = require('./potion.js').Scroll;
+var Potion = require('./potion.js').Potion;
 
 class Monster {
   constructor(name, health, armor, strength, speed, lootClass, weapons) {
@@ -39,7 +41,10 @@ class Monster {
         loot = new Armor().create(lootItemOption);
       } else if (lootItemOption instanceof Weapon) {
         loot = new Weapon().create(lootItemOption);
+      } else if (lootItemOption instanceof Scroll) {
+        loot = new Scroll().create(lootItemOption);
       }
+
       monster.loot = loot;
     }
 
@@ -59,6 +64,10 @@ Monster.lootClass = {
     Weapon.options.bucket,
     Weapon.options.rock,
     Weapon.options.really_rusty_sword,
+    Scroll.options.snot_storm,
+    Scroll.options.snot_storm,
+    Scroll.options.snot_storm,
+    Scroll.options.snot_storm,
   ],
   "low" : [
     Armor.options.leather_helm,
@@ -72,6 +81,14 @@ Monster.lootClass = {
     Weapon.options.axe,
     Weapon.options.short_sword,
     Weapon.options.extremely_stale_fruitcake,
+    Scroll.options.snot_storm,
+    Potion.options.freeze,
+    Scroll.options.snot_storm,
+    Potion.options.freeze,
+    Scroll.options.snot_storm,
+    Potion.options.freeze,
+    Scroll.options.snot_storm,
+    Potion.options.freeze,
   ],
   "mid" : [
     Armor.options.iron_helm,
@@ -83,6 +100,12 @@ Monster.lootClass = {
     Weapon.options.sword,
     Weapon.options.great_axe,
     Weapon.options.bow,
+    Scroll.options.fireball,
+    Scroll.options.fireball,
+    Scroll.options.fireball,
+    Scroll.options.fireball,
+    Scroll.options.fireball,
+    Scroll.options.fireball,
   ],
   "high" : [
     Armor.options.demonic_helm,
@@ -92,6 +115,12 @@ Monster.lootClass = {
     Weapon.options.long_sword,
     Weapon.options.massive_cudgle,
     Weapon.options.massive_rock,
+    Potion.options.freeze,
+    Potion.options.freeze,
+    Potion.options.freeze,
+    Potion.options.freeze,
+    Potion.options.freeze,
+    Potion.options.freeze,
   ],
   "rare" : [
     Armor.options.demonic_helm,
@@ -101,6 +130,11 @@ Monster.lootClass = {
     Armor.options.demonic_boots,
     Weapon.options.fiery_longsword,
     Weapon.options.demonclaw_dagger,
+    Potion.options.freeze,
+    Potion.options.freeze,
+    Potion.options.freeze,
+    Potion.options.freeze,
+    Potion.options.freeze,
   ],
   "exceptional" : [
   ],

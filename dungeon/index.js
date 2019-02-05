@@ -44,7 +44,7 @@ class Game {
 
     this.adventurerMonsterOptions = [
       {name: "Charge", action: (cb) => { this.handleCharge(cb); return true; }},
-      {name: "Cast", viable: () => { return this.player.type == "wizard"; }, action: (cb) => { this.handleSpell(cb); return true; }},
+      {name: "Cast", viable: () => { return this.player.spells.length > 0; }, action: (cb) => { this.handleSpell(cb); return true; }},
       {name: "Shoot", action: () => { this.handleShooting() }},
       {name: "Throw", action: () => { this.handleThrow() }},
       {name: "Communicate", action: () => { this.handleCommunication() }},
