@@ -20,7 +20,7 @@ class Scroll extends Spell {
       whichOption.name,
       whichOption.type,
       whichOption.effect,
-      whichOption.manaCost,
+      whichOption.mana,
       whichOption.focus,
       whichOption.charges,
     );
@@ -51,7 +51,7 @@ class Potion extends Scroll {
       whichOption.name,
       whichOption.type,
       whichOption.effect,
-      whichOption.manaCost,
+      whichOption.mana,
       whichOption.focus,
     );
     return potion;

@@ -143,12 +143,14 @@ class Adventurer {
       if (Util.hitCheck((spell ? spell.focus : this.speed), this.fighting.speed)) {
         console.log("\n\n\nHit!!");
         let damage = this.weapons[0].damage * (Math.floor(Math.random() * this.strength));
-        if (spell) {
-          damage = spell.effect;
-        }
 
         // Checking monsters armor.
         let armorSave = Math.floor(Math.random() * this.fighting.armor);
+        if (spell) {
+          damage = spell.effect;
+          armorSave = 0;
+        }
+
         console.log(`Damage before armor save: ${damage}, armor save: ${armorSave}`);
         damage = damage - armorSave;
 
@@ -235,8 +237,9 @@ class Adventurer {
         }
         setTimeout(() => { cb(); }, 3000);
       } else {
+        let scope = this;
         setTimeout(() => {
-          this.monsterAttack(cb);
+          scope.monsterAttack(cb);
         }, 1000);
       }
     });
@@ -279,6 +282,18 @@ class Adventurer {
     this.spells = remainderSpells;
   }
 
+  spellUsedUpdate(spell) {
+    spell.charges -= 1;
+    if (spell instanceof Scroll && this.type == "wizard") {
+      console.log("You have learned: ");
+      spell.charges = 0;
+      let newSpell = new Spell(spell.name, spell.type, spell.effect, spell.mana, spell.focus);
+      newSpell.describe();
+      this.spells.push(newSpell);
+    }
+    this.removeSpells();
+  }
+
   cast(cb) {
     this.buildSpellsMenu((spell) => {
       if (spell == null) {
@@ -286,35 +301,41 @@ class Adventurer {
         return;
       }
 
-      if (spell.type == Spell.types.damaging || spell.type == "revealing") {
+      console.log("Spell:",spell);
+      this.fighting = this.curRoom.monsters[0];
+      if (this.fighting) {
         this.inFight = true;
-        this.fighting = this.curRoom.monsters[0];
       }
 
       if ( spell instanceof Scroll || spell instanceof Potion ) {
         if (spell.charges >= 1) {
-          this.attack(() => {
-            spell.charges -= 1;
-            if (spell instanceof Scroll && this.type == "wizard") {
-              console.log("You have learned: ");
-              spell.charges = 0;
-              let newSpell = new Spell(spell.name, spell.type, spell.effect, spell.manaCost, spell.focus);
-              newSpell.describe();
-              this.spells.push(newSpell);
-            }
-            this.removeSpells();
+          if (spell.type == Spell.types.damaging || spell.type == Spell.types.revealing) {
+            this.attack(() => {
+              this.spellUsedUpdate(spell);
+              cb();
+            }, spell);
+            return;
+          } else if (spell.type == Spell.types.healing) {
+            this.health += spell.effect;
+            console.log(`You have been healed for ${spell.effect} health!`);
+            this.spellUsedUpdate(spell);
             cb();
-          }, spell);
+            return;
+          }
+        } else {
+          consol.log("Charges check failed.  Can't happen.");
         }
       } else {
         if (this.mana > spell.mana) {
           this.mana -= spell.mana;
           this.attack(cb, spell);
+          return;
         } else {
           console.log("You attempt to cast " + spell.name + " but fail.");
           setTimeout(() => {
             this.monsterAttack(cb);
           }, 1000);
+          return;
         }
       }
     });
