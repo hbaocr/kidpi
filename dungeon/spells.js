@@ -20,12 +20,25 @@ class Spell{
     return targets;
   }
 
-  describe() {
+  isCombat() {
+    return this.type == Spell.types.damaging || this.type == Spell.types.revealing;
+  }
+
+  isNonCombat() {
+    return this.type == Spell.types.healing || 
+      this.type == Spell.types.enchanting ||
+      this.type == Spell.types.buffing;
+  }
+
+  description() {
     let desc = "";
     let targets = this.getTarget();
     desc = `${this.name} is a ${this.type} of spell.  It does ${this.effect} on ${targets}`;
+    return desc;
+  }
 
-    console.log(desc);
+  describe() {
+    console.log(this.description());
   }
 }
 

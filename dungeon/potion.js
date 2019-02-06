@@ -7,12 +7,15 @@ class Scroll extends Spell {
     this.charges = charges;
   }
 
-  describe() {
+  description() {
     let desc = "";
     let targets = this.getTarget();
     desc = `${this.name} is a ${this.type} of scroll.  It does ${this.effect} on ${targets}`;
+    return desc;
+  }
 
-    console.log(desc);
+  describe() {
+    console.log(this.description());
   }
 
   create(whichOption) {
@@ -39,12 +42,15 @@ class Potion extends Scroll {
     super(name, type, effect, manaCost, focus, 1);
   }
 
-  describe() {
+  description() {
     let desc = "";
     let targets = this.getTarget();
     desc = `${this.name} is a ${this.type} of potion.  It does ${this.effect} on ${targets}`;
+    return desc;
+  }
 
-    console.log(desc);
+  describe() {
+    console.log(this.description());
   }
 
   create(whichOption) {

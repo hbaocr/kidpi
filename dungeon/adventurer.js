@@ -53,7 +53,7 @@ class Adventurer {
               this.armor = 1;
               this.baseArmor = 1;
               this.strength = 3;
-              this.speed = 4;
+              this.speed = 5;
               this.mana = 0;
               this.weapons[0] = new Weapon("fists", "blunt", "-", "-", null, 1);
               this.weapons[1] = new Weapon("fists", "blunt", "-", "-", null, 1);
@@ -71,6 +71,7 @@ class Adventurer {
               this.spells[0] = new Spell("Fireball", Spell.types.damaging, 3, 3, 7);
               this.nextQuestion();
             },
+            /*
             "Archer": (value) => {
               this.type = value;
               this.armor = 2;
@@ -82,6 +83,7 @@ class Adventurer {
               this.weapons[1] = new Weapon("fists", "blunt", "-", "-", null, 1);
               this.nextQuestion();
             },
+            */
             "Fighter": (value) => {
               this.type = value;
               this.armor = 3;
@@ -257,23 +259,70 @@ class Adventurer {
   }
 
   buildSpellsMenu(cb) {
-    console.log("Which spell, potion or scroll would you like to use?");
+    let spellTypes = [];
+    // Get each class of spells.
     for (let i = 0; i < this.spells.length; i++) {
-      console.log((i + 1) + ": ");
-      this.spells[i].describe();
+      let curSpell = this.spells[i];
+      spellTypes[curSpell.type] = curSpell;
     }
 
-    Util.rl.question('\n\n>>', (answer) => {
-      let pickIndex = answer - 0;
-      if (pickIndex >= this.spells.length + 1) {
-        console.log("You don't have that many spells! Please try again.  Or enter 0 to cancel.");
-        setTimeout((cb) =>  { this.buildSpellsMenu(cb); }, 2000);
-      } else if (answer == "0") {
-        cb(null);
+    // If there is man spells - we need to ask.
+    if (this.curRoom.hasMonster()) {
+      if (this.spells.length > 1) {
+        console.log("Which spell, potion or scroll would you like to use?");
+        for (let i = 0; i < this.spells.length; i++) {
+          console.log((i + 1) + ": " + this.spells[i].description());
+        }
+
+        Util.rl.question('\n\n>>', (answer) => {
+          let pickIndex = answer - 0;
+          if (pickIndex >= this.spells.length + 1) {
+            console.log("You don't have that many spells! Please try again.  Or enter 0 to cancel.");
+            setTimeout((cb) =>  { this.buildSpellsMenu(cb); }, 2000);
+          } else if (answer == "0") {
+            cb(null);
+          } else {
+            cb(this.spells[pickIndex - 1]);
+          }
+        });
       } else {
-        cb(this.spells[pickIndex - 1]);
+        // If there is only one spell... just use it.
+        cb(this.spells[0]);
       }
-    });
+    } else {
+      let spellsForMenu = [];
+      if (spellTypes[Spell.types.healing])
+        spellsForMenu.concat(spellTypes[Spell.types.healing]);
+      if (spellTypes[Spell.types.revealing])
+        spellsForMenu.concat(spellTypes[Spell.types.revealing]);
+      if (spellTypes[Spell.types.enchanting])
+        spellsForMenu.concat(spellTypes[Spell.types.enchanting]);
+      if (spellTypes[Spell.types.buffing])
+        spellsForMenu.concat(spellTypes[Spell.types.buffing]);
+
+      if (spellsForMenu.length <= 0) {
+        console.log("No spells to cast right now.");
+        cb(null);
+        return;
+      }
+
+      console.log("Which spell, potion or scroll would you like to use?");
+      for (let i = 0; i < spellsForMenu.length; i++) {
+        console.log((i + 1) + ": " + spellsForMenu[i].description());
+      }
+
+      Util.rl.question('\n\n>>', (answer) => {
+        let pickIndex = answer - 0;
+        if (pickIndex >= spellsForMenu.length + 1) {
+          console.log("You don't have that many spells! Please try again.  Or enter 0 to cancel.");
+          setTimeout((cb) =>  { this.buildSpellsMenu(cb); }, 2000);
+        } else if (answer == "0") {
+          cb(null);
+        } else {
+          cb(spellsForMenu[pickIndex - 1]);
+        }
+      });
+    }
   }
 
   removeSpells() {
@@ -294,8 +343,11 @@ class Adventurer {
   }
 
   spellUsedUpdate(spell) {
-    spell.charges -= 1;
-    if (spell instanceof Scroll && this.type == "wizard") {
+    if (spell instanceof Scroll || spell instanceof Potion) {
+      spell.charges -= 1;
+    }
+
+    if (spell instanceof Scroll && !(spell instanceof Potion) && this.type == "wizard") {
       console.log("You have learned: ");
       spell.charges = 0;
       let newSpell = new Spell(spell.name, spell.type, spell.effect, spell.mana, spell.focus);
@@ -312,24 +364,13 @@ class Adventurer {
         return;
       }
 
-      this.fighting = this.curRoom.monsters[0];
-      if (this.fighting) {
-        this.inFight = true;
-      }
-
       if ( spell instanceof Scroll || spell instanceof Potion ) {
         if (spell.charges >= 1) {
-          if (spell.type == Spell.types.damaging || spell.type == Spell.types.revealing) {
-            this.attack(() => {
-              this.spellUsedUpdate(spell);
-              cb();
-            }, spell);
+          if (spell.isCombat()) {
+            handleFightingSpell(spell, cb);
             return;
           } else if (spell.type == Spell.types.healing) {
-            this.health += spell.effect;
-            console.log(`You have been healed for ${spell.effect} health!`);
-            this.spellUsedUpdate(spell);
-            cb();
+            handleHealingSpell(spell, cb)
             return;
           } else if (spell.type == Spell.types.buffing) {
             cb();
@@ -341,17 +382,52 @@ class Adventurer {
       } else {
         if (this.mana > spell.mana) {
           this.mana -= spell.mana;
-          this.attack(cb, spell);
+          if (spell.isCombat()) {
+            this.fighting = this.curRoom.monsters[0];
+            if (this.fighting) {
+              this.inFight = true;
+            }
+            this.attack(cb, spell);
+          }
           return;
         } else {
           console.log("You attempt to cast " + spell.name + " but fail.");
-          setTimeout(() => {
-            this.monsterAttack(cb);
-          }, 1000);
+          if (spell.isCombat() && this.curRoom.hasMonster()) {
+            this.fighting = this.curRoom.monsters[0];
+            if (this.fighting) {
+              this.inFight = true;
+            }
+
+            setTimeout(() => {
+              this.monsterAttack(cb);
+            }, 1000);
+          }
           return;
         }
       }
     });
+  }
+
+  handleFightingSpell(spell, cb) {
+    this.fighting = this.curRoom.monsters[0];
+    if (this.fighting) {
+      this.inFight = true;
+      this.attack(() => {
+        this.spellUsedUpdate(spell);
+        cb();
+      }, spell);
+    } else {
+      console.log("Not in fight.");
+      cb();
+    }
+    return;
+  }
+
+  handleHealingSpell(spell, cb) {
+    this.health += spell.effect;
+    console.log(`You have been healed for ${spell.effect} health!`);
+    this.spellUsedUpdate(spell);
+    cb();
   }
 
   runAway(cb) {
@@ -447,8 +523,6 @@ class Adventurer {
       this.surveyCallback = cb;
     }
 
-    console.log("You are on question: ", this.curBuildQuestion, " of ", this.buildQuestions.length - 1);
-
     if (this.curBuildQuestion < this.buildQuestions.length) {
       console.log("Next question....");
       let curQuestion = this.buildQuestions[this.curBuildQuestion];
@@ -479,7 +553,7 @@ class Adventurer {
 
       options += ")";
 
-      Util.rl.question('\n '+curQuestion.q + " " + options + '\n>>', (answer) => {
+      Util.rl.question('\n '+curQuestion.q + " " + options + '\n>> ', (answer) => {
         if (curQuestion.answers) {
           if (curQuestion.answers["any"]) {
             curQuestion.answers["any"](answer);

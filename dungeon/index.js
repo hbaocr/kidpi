@@ -28,6 +28,7 @@ class Game {
     this.adventurerOptions = [
       {name: "Inspect", action: () => { this.player.curRoom.describe(); }},
       {name: "Pickup", viable: () => {return this.player.curRoom.hasLoot();}, action: (cb) => { return this.getLoot(cb); }},
+      {name: "Cast", viable: () => { return this.player.spells.length > 0; }, action: (cb) => { this.handleSpell(cb); return true; }},
       {name: "Go north", viable: () => {return this.player.curRoom.hasNorth();}, action: () => { this.goNorth() }},
       {name: "Go south", viable: () => {return this.player.curRoom.hasSouth();}, action: () => { this.goSouth() }},
       {name: "Go east", viable: () => {return this.player.curRoom.hasEast();}, action: () => { this.goEast() }},
@@ -45,9 +46,9 @@ class Game {
     this.adventurerMonsterOptions = [
       {name: "Charge", action: (cb) => { this.handleCharge(cb); return true; }},
       {name: "Cast", viable: () => { return this.player.spells.length > 0; }, action: (cb) => { this.handleSpell(cb); return true; }},
-      {name: "Shoot", action: () => { this.handleShooting() }},
-      {name: "Throw", action: () => { this.handleThrow() }},
-      {name: "Communicate", action: () => { this.handleCommunication() }},
+      {name: "Shoot", viable: () => { return this.player.type == "archer"; }, action: () => { this.handleShooting() }},
+      /*{name: "Throw", action: () => { this.handleThrow() }},
+      {name: "Communicate", action: () => { this.handleCommunication() }},*/
       {name: "Run Away", viable: () => { return this.player.inFight; }, action: (cb) => { this.handleRunAway(cb) }},
     ];
 
@@ -164,6 +165,8 @@ class Game {
   }
 
   getLoot(cb) {
+    if (!this.player.curRoom.hasLoot()) { cb(); return;}
+
     for (let i = 0; i < this.player.curRoom.loot.length; i++) {
       let curItem = this.player.curRoom.loot[i];
       if (curItem && curItem.name) {
@@ -210,15 +213,21 @@ class Game {
 
     let options = this.coreOptions;
     let isAdventurer = false;
+
+    if (this.player.curRoom == null)
+      this.player.curRoom = this.dungeon.entrance;
+
     console.log(`Stats: ${this.player.name} has ${this.player.health} health ${this.player.mana} mana and is carrying a ${this.player.weapons[0].name} and has ${this.player.armor} defense.`);
     if (this.player.fighting) {
       console.log(`In combat with ${this.player.fighting.name}!`);
     }
+
+    if (this.player.curRoom.hasMonster() && !this.player.fighting) {
+      console.log(`This room contains a ${this.player.curRoom.monsters[0].name}!`);
+    }
     this.dungeon.drawMap();
 
     options = this.adventurerOptions;
-    if (this.player.curRoom == null)
-      this.player.curRoom = this.dungeon.entrance;
 
     if (this.player.curRoom.hasMonster() && this.player.inFight != true) {
       options = this.adventurerMonsterOptions;
