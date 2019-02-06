@@ -30,6 +30,7 @@ class Scroll extends Spell {
 
 Scroll.options = {
   snot_storm: new Scroll("Snot Storm", Spell.types.damaging, 2, 5, 9, 5),
+  vaporize: new Scroll("Vaporize", Spell.types.damaging, 25, 50, 9, 1),
   fireball: new Scroll("Fireball", Spell.types.damaging, 3, 7, 5, 3),
 }
 
@@ -63,6 +64,9 @@ Potion.types = Spell.types;
 Potion.options = {
   freeze: new Potion("Freeze", Spell.types.damaging, 2, 5, 9),
   mutate: new Potion("Mutate", Spell.types.damaging, 20, 50, 10),
+  blue_heal: new Potion("blue heal", Spell.types.healing, 5, 40, 10),
+  pink_heal: new Potion("pink heal", Spell.types.healing, 10, 70, 10),
+  red_heal: new Potion("red heal", Spell.types.healing, 20, 90, 10),
 }
 
 module.exports.Potion = Potion;

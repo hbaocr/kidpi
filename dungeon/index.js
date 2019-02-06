@@ -53,7 +53,7 @@ class Game {
 
     this.adventurerFightOptions = [
       {name: "Attack", action: (cb) => { this.handleAttack(cb); return true; }},
-      {name: "Cast", viable: () => { return this.player.type == "wizard"; }, action: (cb) => { this.handleSpell(cb); return true; }},
+      {name: "Cast", viable: () => { return this.player.spells.length > 0; }, action: (cb) => { this.handleSpell(cb); return true; }},
       {name: "Run Away", viable: () => { return this.player.inFight; }, action: (cb) => { this.handleRunAway(cb) }},
     ];
 

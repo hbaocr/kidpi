@@ -52,10 +52,11 @@ class Adventurer {
               this.type = value;
               this.armor = 1;
               this.baseArmor = 1;
-              this.strength = 2;
+              this.strength = 3;
               this.speed = 4;
               this.mana = 0;
               this.weapons[0] = new Weapon("fists", "blunt", "-", "-", null, 1);
+              this.weapons[1] = new Weapon("fists", "blunt", "-", "-", null, 1);
               this.nextQuestion();
             },
             "Wizard": (value) => {
@@ -78,16 +79,18 @@ class Adventurer {
               this.speed = 2;
               this.mana = 0;
               this.weapons[0] = new Weapon("fists", "blunt", "-", "-", null, 1);
+              this.weapons[1] = new Weapon("fists", "blunt", "-", "-", null, 1);
               this.nextQuestion();
             },
             "Fighter": (value) => {
               this.type = value;
               this.armor = 3;
               this.baseArmor = 3;
-              this.strength = 3;
+              this.strength = 4;
               this.speed = 2;
               this.mana = 0;
               this.weapons[0] = new Weapon("fists", "blunt", "-", "-", null, 1);
+              this.weapons[1] = new Weapon("fists", "blunt", "-", "-", null, 1);
               this.nextQuestion();
             },
             "hidden": (value) => {
@@ -98,6 +101,7 @@ class Adventurer {
               this.speed = 30;
               this.mana = 0;
               this.weapons[0] = new Weapon("short sword", "stabby", "", "short sword", null, 1);
+              this.weapons[1] = new Weapon("short sword", "stabby", "", "short sword", null, 1);
               this.nextQuestion();
             }
           }
@@ -133,38 +137,46 @@ class Adventurer {
 
   playerAttack(spell, cb) {
     if (!spell) {
-      console.log("\n\nYou swing with your " + this.weapons[0].name);
+      for (let i = 0; i < this.weapons.length; i++) {
+        console.log("\n\nYou swing with your " + this.weapons[0].name);
+      }
     } else {
       console.log("\n\nYou cast " + spell.name);
     }
 
     // Check to see if we hit.
     setTimeout(() => {
-      if (Util.hitCheck((spell ? spell.focus : this.speed), this.fighting.speed)) {
-        console.log("\n\n\nHit!!");
-        let damage = this.weapons[0].damage * (Math.floor(Math.random() * this.strength));
+      for (let i = 0; i < this.weapons.length; i++) {
+        if (Util.hitCheck((spell ? spell.focus : this.speed), this.fighting.speed)) {
+          console.log("\n\n\nHit!!");
+          let strengthMod = (Math.floor(Math.random() * this.strength));
 
-        // Checking monsters armor.
-        let armorSave = Math.floor(Math.random() * this.fighting.armor);
-        if (spell) {
-          damage = spell.effect;
-          armorSave = 0;
-        }
+          if (strengthMod <= 0) strengthMod = 1;
 
-        console.log(`Damage before armor save: ${damage}, armor save: ${armorSave}`);
-        damage = damage - armorSave;
+          let damage = this.weapons[i].damage * strengthMod;
 
-        if (damage <= 0) {
-          console.log("\nYour blow is deflected by the monsters armor!");
+          // Checking monsters armor.
+          let armorSave = Math.floor(Math.random() * this.fighting.armor);
+          if (spell) {
+            damage = spell.effect;
+            armorSave = 0;
+          }
+
+          console.log(`Damage before armor save: ${damage}, armor save: ${armorSave}`);
+          damage = damage - armorSave;
+
+          if (damage <= 0) {
+            console.log("\nYour blow is deflected by the monsters armor!");
+          } else {
+            console.log("\nIt does " + damage + " damage to " + this.fighting.name);
+          }
+
+          this.fighting.health -= damage;
+          console.log(this.fighting.name + " has " + this.fighting.health + " health left!");
         } else {
-          console.log("\nIt does " + damage + " damage to " + this.fighting.name);
+          console.log("\n\n\nOh no! You missed!!");
+          console.log(this.fighting.name + " has " + this.fighting.health + " health left!");
         }
-
-        this.fighting.health -= damage;
-        console.log(this.fighting.name + " has " + this.fighting.health + " health left!");
-      } else {
-        console.log("\n\n\nOh no! You missed!!");
-        console.log(this.fighting.name + " has " + this.fighting.health + " health left!");
       }
       cb();
     }, 2000);
@@ -237,9 +249,8 @@ class Adventurer {
         }
         setTimeout(() => { cb(); }, 3000);
       } else {
-        let scope = this;
         setTimeout(() => {
-          scope.monsterAttack(cb);
+          this.monsterAttack(cb);
         }, 1000);
       }
     });
@@ -521,39 +532,27 @@ class Adventurer {
     if (!(loot instanceof Weapon)) {
       return;
     }
+
+    this.weapons.push(loot);
+
     console.log("Adding weapon item:", loot.name);
-    let weaponType = loot.type;
-    let typeCt = 0;
-    let typePieces = [loot];
-    let nonTypePieces = [];
-    for (let i = 0; i < this.weapons.length; i++) {
-      let curPiece = this.weapons[i];
-      if (curPiece.type == loot.type) {
-        typeCt++;
-        typePieces.push(curPiece);
-      } else {
-        nonTypePieces.push(curPiece);
-      }
+
+    // Can't use two weapons...
+    console.log(`You have multiple weapon options...`);
+
+    // Find the one that is stronger.
+    this.weapons.sort((a,b) => {
+      return b.damage - a.damage;
+    });
+
+    for (let i = this.weapons[0].max; i < this.weapons.length; i++) {
+      console.log(`Moving ${this.weapons[i].name} to your backpack.`);
+      this.backpack.push(this.weapons[i]);
     }
 
-    if (typeCt + 1 > weaponType.max) {
-      // Can't wear two helmets.
-      console.log(`You have multiple ${weaponType.name} options selecting the best.`);
-
-      // Find the one that is stronger.
-      typePieces.sort((a,b) => {
-        return b.damage - a.damage;
-      });
-
-      for (let i = weaponType.max; i < typePieces.length; i++) {
-        console.log(`Moving ${typePieces[i].name} to your backpack.`);
-        this.backpack.push(typePieces[i]);
-      }
-      typePieces.length = weaponType.max;
-    }
+    this.weapons.length = this.weapons[0].max;
 
     // Put all the weapon back in.
-    this.weapons = [].concat(nonTypePieces).concat(typePieces);
     console.log("You are now equiped with:");
     for (let i = 0; i < this.weapons.length; i++) {
       console.log(`${this.weapons[i].name} and it provides ${this.weapons[i].damage} damage.`);
