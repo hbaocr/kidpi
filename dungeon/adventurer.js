@@ -312,7 +312,6 @@ class Adventurer {
         return;
       }
 
-      console.log("Spell:",spell);
       this.fighting = this.curRoom.monsters[0];
       if (this.fighting) {
         this.inFight = true;
