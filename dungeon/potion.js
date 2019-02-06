@@ -40,6 +40,7 @@ Scroll.options = {
 class Potion extends Scroll {
   constructor(name, type, effect, manaCost, focus) {
     super(name, type, effect, manaCost, focus, 1);
+    this.isPotion = true;
   }
 
   description() {

@@ -4,6 +4,7 @@ var Armor = require('./armor.js').Armor;
 var Dungeon = require('./dungeon.js').Dungeon;
 var DungeonCore = require('./dungeon.js').DungeonCore;
 var Adventurer = require('./adventurer.js').Adventurer;
+var Monster = require('./monster.js').Monster;
 
 var out = console.log;
 

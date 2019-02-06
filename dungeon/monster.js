@@ -11,6 +11,7 @@ class Monster {
     this.armor = armor;
     this.strength = strength;
     this.speed = speed;
+    this.difficulty = this.strength + this.speed + this.armor + this.health;
     this.lootClass = lootClass;
     this.weapons = weapons;
     this.hasLoot = false;
@@ -18,6 +19,19 @@ class Monster {
 
   createRandom() {
     let whichMonster = Util.getRandomProp(Monster.monster_options);
+    return this.create(whichMonster);
+  }
+
+  createRandomInRange(low, high) {
+    let mOptions = [];
+    for (let i = 0; i < Monster.byClass.length; i++) {
+      let curM = Monster.byClass[i];
+      if (curM.difficulty >= low && curM.difficulty < high) {
+        mOptions.push(curM);
+      }
+    }
+
+    let whichMonster = Util.getRandom(mOptions);
     return this.create(whichMonster);
   }
 
@@ -337,6 +351,33 @@ Monster.monster_options = {
     lootClass: "mid",
     weapons: [new Weapon("ranced breath", "poison", "-", "-", null, 6),new Weapon("big feet", "stompy", "-", "-", null, 4)]
   },
+  drake: {
+    name:"drake",
+    health: 60,
+    armor : 8,
+    strength: 8,
+    speed: 9,
+    manaPerTurn : 0,
+    mana : 40,
+    lootClass: "exceptional",
+    weapons: [new Weapon("fire storm", "burny", "-", "-", null, 50),new Weapon("big feet", "stompy", "-", "-", null, 20)]
+  },
+}
+
+Monster.byClass = [];
+for (let m in Monster.monster_options) {
+  let curMonster = (new Monster()).create(Monster.monster_options[m]);
+  Monster.byClass.push(curMonster);
+}
+
+Monster.byClass.sort((a,b) => {
+  return b.difficulty - a.difficulty;
+});
+
+Monster.spewList = [];
+for (let i = 0; i < Monster.byClass.length; i++) {
+  Monster.spewList[i] = [Monster.byClass[i].name, Monster.byClass[i].difficulty];
 }
 
 module.exports.Monster = Monster;
+

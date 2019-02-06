@@ -167,6 +167,10 @@ class Adventurer {
           console.log(`Damage before armor save: ${damage}, armor save: ${armorSave}`);
           damage = damage - armorSave;
 
+          if (damage < 0) {
+            damage = 0;
+          }
+
           if (damage <= 0) {
             console.log("\nYour blow is deflected by the monsters armor!");
           } else {
@@ -259,11 +263,12 @@ class Adventurer {
   }
 
   buildSpellsMenu(cb) {
-    let spellTypes = [];
+    let spellTypes = {};
     // Get each class of spells.
     for (let i = 0; i < this.spells.length; i++) {
       let curSpell = this.spells[i];
-      spellTypes[curSpell.type] = curSpell;
+      if (!spellTypes[curSpell.type]) spellTypes[curSpell.type] = [];
+      spellTypes[curSpell.type].push(curSpell);
     }
 
     // If there is man spells - we need to ask.
@@ -292,13 +297,13 @@ class Adventurer {
     } else {
       let spellsForMenu = [];
       if (spellTypes[Spell.types.healing])
-        spellsForMenu.concat(spellTypes[Spell.types.healing]);
+        spellsForMenu = spellsForMenu.concat(spellTypes[Spell.types.healing]);
       if (spellTypes[Spell.types.revealing])
-        spellsForMenu.concat(spellTypes[Spell.types.revealing]);
+        spellsForMenu = spellsForMenu.concat(spellTypes[Spell.types.revealing]);
       if (spellTypes[Spell.types.enchanting])
-        spellsForMenu.concat(spellTypes[Spell.types.enchanting]);
+        spellsForMenu = spellsForMenu.concat(spellTypes[Spell.types.enchanting]);
       if (spellTypes[Spell.types.buffing])
-        spellsForMenu.concat(spellTypes[Spell.types.buffing]);
+        spellsForMenu = spellsForMenu.concat(spellTypes[Spell.types.buffing]);
 
       if (spellsForMenu.length <= 0) {
         console.log("No spells to cast right now.");
@@ -347,7 +352,7 @@ class Adventurer {
       spell.charges -= 1;
     }
 
-    if (spell instanceof Scroll && !(spell instanceof Potion) && this.type == "wizard") {
+    if (spell instanceof Scroll && !(spell.isPotion) && this.type == "wizard") {
       console.log("You have learned: ");
       spell.charges = 0;
       let newSpell = new Spell(spell.name, spell.type, spell.effect, spell.mana, spell.focus);
@@ -367,10 +372,10 @@ class Adventurer {
       if ( spell instanceof Scroll || spell instanceof Potion ) {
         if (spell.charges >= 1) {
           if (spell.isCombat()) {
-            handleFightingSpell(spell, cb);
+            this.handleFightingSpell(spell, cb);
             return;
           } else if (spell.type == Spell.types.healing) {
-            handleHealingSpell(spell, cb)
+            this.handleHealingSpell(spell, cb)
             return;
           } else if (spell.type == Spell.types.buffing) {
             cb();
@@ -584,8 +589,6 @@ class Adventurer {
   }
 
   addLoot(loot, cb) {
-    console.log("Loot is :", loot instanceof Armor);
-    console.log(loot);
     if (loot instanceof Armor) {
       this.addArmor(loot, () => {});
     }

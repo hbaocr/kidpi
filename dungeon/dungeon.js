@@ -1,5 +1,6 @@
 var Room = require("./room.js").Room;
 var Util = require("./util.js");
+var Monster = require("./monster.js").Monster;
 class Dungeon {
   constructor(game) {
     this.game = game;
@@ -75,6 +76,41 @@ class Dungeon {
         room.randomize();
         room.x = buildPosX;
         room.y = buildPosY;
+        if (room.hasMonster()) {
+          let classBandLow = 0;
+          let classBandHigh = 10;
+
+          if (buildPosY > (.2 * this.roomFactor)) {
+            classBandLow = 10
+            classBandHigh = 12
+          }
+
+          if (buildPosY > (.4 * this.roomFactor)) {
+            classBandLow = 10
+            classBandHigh = 20
+          }
+
+          if (buildPosY > (.6 * this.roomFactor)) {
+            classBandLow = 15
+            classBandHigh = 30
+          }
+
+          if (buildPosY > (.8 * this.roomFactor)) {
+            classBandLow = 20
+            classBandHigh = 50
+          }
+
+          if (buildPosY == this.lastRoomY && buildPosX == this.lastRoomX) {
+            classBandLow = 60
+            classBandHigh = 1000
+          }
+
+          try {
+          room.monsters[0] = (new Monster()).createRandomInRange(classBandLow, classBandHigh);
+          } catch(ex) {
+            console.log("Failed to create monster in range: ", classBandLow, classBandHigh, ex);
+          }
+        }
         prevRoom.directions[compassDir] = room;
         this.roomGrid[buildPosY][buildPosX] = room;
         this.rooms.push(room);
