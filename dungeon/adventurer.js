@@ -332,6 +332,9 @@ class Adventurer {
             this.spellUsedUpdate(spell);
             cb();
             return;
+          } else if (spell.type == Spell.types.buffing) {
+            cb();
+            return;
           }
         } else {
           consol.log("Charges check failed.  Can't happen.");

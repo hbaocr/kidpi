@@ -67,6 +67,8 @@ Potion.options = {
   blue_heal: new Potion("blue heal", Spell.types.healing, 5, 40, 10),
   pink_heal: new Potion("pink heal", Spell.types.healing, 10, 70, 10),
   red_heal: new Potion("red heal", Spell.types.healing, 20, 90, 10),
+  good_scotch: new Potion("good scotch", Spell.types.buffing, 10, 90, 10, [{"strength":1,"speed":1, duration:Spell.durations.battle}]),
+  the_flash: new Potion("the flash", Spell.types.buffing, 10, 90, 10, [{"speed":1, duration:Spell.durations.life}]),
 }
 
 module.exports.Potion = Potion;

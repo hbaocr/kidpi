@@ -37,4 +37,9 @@ Spell.types = {
   "buffing": "buffing",
 }
 
+Spell.durations = {
+  "battle":"battle",
+  "life":"life",
+}
+
 module.exports.Spell = Spell;
