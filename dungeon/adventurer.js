@@ -47,7 +47,7 @@ class Adventurer {
       },
       {q: "What class?",
           confirmation: "Great!",
-          answers: { 
+          answers: {
             "Rogue":(value) => {
               this.type = value;
               this.armor = 1;
@@ -104,6 +104,7 @@ class Adventurer {
               this.mana = 0;
               this.weapons[0] = new Weapon("short sword", "stabby", "", "short sword", null, 1);
               this.weapons[1] = new Weapon("short sword", "stabby", "", "short sword", null, 1);
+              this.spells[0] = new Potion().create(Potion.options.good_scotch);
               this.nextQuestion();
             }
           }
@@ -378,7 +379,7 @@ class Adventurer {
             this.handleHealingSpell(spell, cb)
             return;
           } else if (spell.type == Spell.types.buffing) {
-            cb();
+            this.handleBuffingSpell(spell, cb)
             return;
           }
         } else {
@@ -433,6 +434,20 @@ class Adventurer {
     console.log(`You have been healed for ${spell.effect} health!`);
     this.spellUsedUpdate(spell);
     cb();
+  }
+
+  handleBuffingSpell(spell, cb) {
+    console.log("Spell:", spell);
+    for (let prop in spell.buffs) {
+      if (prop == "duration") continue;
+      this[prop] += spell.buffs[prop];
+      console.log(`Your ${prop} been increased!`);
+    }
+
+    this.spellUsedUpdate(spell);
+    setTimeout(() => {
+      cb();
+    }, 3000);
   }
 
   runAway(cb) {

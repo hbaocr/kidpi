@@ -38,9 +38,10 @@ Scroll.options = {
 }
 
 class Potion extends Scroll {
-  constructor(name, type, effect, manaCost, focus) {
-    super(name, type, effect, manaCost, focus, 1);
+  constructor(name, type, effect, focus, buffs) {
+    super(name, type, effect, 1, focus, 1);
     this.isPotion = true;
+    this.buffs = buffs;
   }
 
   description() {
@@ -59,8 +60,8 @@ class Potion extends Scroll {
       whichOption.name,
       whichOption.type,
       whichOption.effect,
-      whichOption.mana,
       whichOption.focus,
+      whichOption.buffs,
     );
     return potion;
   }
@@ -69,13 +70,13 @@ class Potion extends Scroll {
 Potion.types = Spell.types;
 
 Potion.options = {
-  freeze: new Potion("Freeze", Spell.types.damaging, 2, 5, 9),
-  mutate: new Potion("Mutate", Spell.types.damaging, 20, 50, 10),
-  blue_heal: new Potion("blue heal", Spell.types.healing, 5, 40, 10),
-  pink_heal: new Potion("pink heal", Spell.types.healing, 10, 70, 10),
-  red_heal: new Potion("red heal", Spell.types.healing, 20, 90, 10),
-  good_scotch: new Potion("good scotch", Spell.types.buffing, 10, 90, 10, [{"strength":1,"speed":1, duration:Spell.durations.battle}]),
-  the_flash: new Potion("the flash", Spell.types.buffing, 10, 90, 10, [{"speed":1, duration:Spell.durations.life}]),
+  freeze: new Potion("Freeze", Spell.types.damaging, 2, 9),
+  mutate: new Potion("Mutate", Spell.types.damaging, 20, 10),
+  blue_heal: new Potion("blue heal", Spell.types.healing, 5, 10),
+  pink_heal: new Potion("pink heal", Spell.types.healing, 10,10),
+  red_heal: new Potion("red heal", Spell.types.healing, 20,10),
+  good_scotch: new Potion("good scotch", Spell.types.buffing, 10,10, {"strength":3,"speed":2, duration:Spell.durations.life}),
+  the_flash: new Potion("the flash", Spell.types.buffing, 10,10, {"speed":3, duration:Spell.durations.life}),
 }
 
 module.exports.Potion = Potion;

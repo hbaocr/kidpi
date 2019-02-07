@@ -129,6 +129,8 @@ Monster.lootClass = {
     Potion.options.blue_heal,
     Potion.options.blue_heal,
     Potion.options.blue_heal,
+    Potion.options.good_scotch,
+    Potion.options.good_scotch,
   ],
   "mid" : [
     Armor.options.iron_helm,
@@ -154,6 +156,9 @@ Monster.lootClass = {
     Potion.options.pink_heal,
     Potion.options.pink_heal,
     Potion.options.pink_heal,
+    Potion.options.good_scotch,
+    Potion.options.good_scotch,
+    Potion.options.good_scotch,
   ],
   "high" : [
     Armor.options.demonic_helm,
@@ -174,14 +179,32 @@ Monster.lootClass = {
     Potion.options.red_heal,
     Potion.options.red_heal,
     Scroll.options.vaporize,
+    Potion.options.good_scotch,
+    Potion.options.good_scotch,
+    Potion.options.good_scotch,
+    Potion.options.good_scotch,
   ],
   "rare" : [
+    Armor.options.demonic_helm,
+    Armor.options.demonic_helm,
     Armor.options.demonic_helm,
     Armor.options.demonic_chestplate,
     Armor.options.demonic_pants,
     Armor.options.demonic_gauntlets,
     Armor.options.demonic_boots,
+    Armor.options.demonic_chestplate,
+    Armor.options.demonic_pants,
+    Armor.options.demonic_gauntlets,
+    Armor.options.demonic_boots,
+    Armor.options.demonic_chestplate,
+    Armor.options.demonic_pants,
+    Armor.options.demonic_gauntlets,
+    Armor.options.demonic_boots,
     Weapon.options.fiery_longsword,
+    Weapon.options.fiery_longsword,
+    Weapon.options.fiery_longsword,
+    Weapon.options.demonclaw_dagger,
+    Weapon.options.demonclaw_dagger,
     Weapon.options.demonclaw_dagger,
     Potion.options.freeze,
     Potion.options.freeze,
@@ -198,14 +221,24 @@ Monster.lootClass = {
     Potion.options.red_heal,
     Scroll.options.vaporize,
     Scroll.options.vaporize,
+    Potion.options.good_scotch,
+    Potion.options.good_scotch,
+    Potion.options.good_scotch,
+    Potion.options.good_scotch,
+    Potion.options.good_scotch,
   ],
   "exceptional" : [
     Scroll.options.vaporize,
     Scroll.options.vaporize,
     Scroll.options.vaporize,
     Scroll.options.vaporize,
+    Potion.options.good_scotch,
+    Potion.options.good_scotch,
+    Potion.options.good_scotch,
   ],
   "oneofakind" : [
+  ],
+  "hippie" : [
   ],
 }
 
@@ -361,6 +394,16 @@ Monster.monster_options = {
     mana : 40,
     lootClass: "exceptional",
     weapons: [new Weapon("fire storm", "burny", "-", "-", null, 50),new Weapon("big feet", "stompy", "-", "-", null, 20)]
+  },
+  possesed_hippie: {
+    name:"possesed hippie",
+    health : 6,
+    armor : 3,
+    strength : 6,
+    speed : 4,
+    manaPerTurn : 0,
+    lootClass: "hippie",
+    weapons : [new Weapon("cultist dagger", "stabby", "-", "-", null, 3)]
   },
 }
 
