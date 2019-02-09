@@ -6,8 +6,8 @@ var DungeonCore = require('./dungeon.js').DungeonCore;
 var Adventurer = require('./adventurer.js').Adventurer;
 var Monster = require('./monster.js').Monster;
 
-var out = console.log;
 
+var out = console.log;
 
 class Game {
   constructor() {
@@ -209,6 +209,8 @@ class Game {
       // This is the first turn of the game.
       //this.chooseRole();
       this.buildAdventurer();
+      Util.registerSaveObject("player", this);
+      Util.registerSaveObject("dungeon", this);
       return;
     }
 

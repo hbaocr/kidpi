@@ -78,6 +78,7 @@ Weapon.options = {
   massive_rock: new Weapon("massive cudgle", "blunt", "-", "-", null, 6),
   fiery_longsword: new Weapon("fiery logsword", "slashing", "-", "-", null, 8),
   demonclaw_dagger: new Weapon("demonclaw dagger", "stabby", "-", "-", null, 9),
+  cultist_dagger: new Weapon("cultist dagger", "stabby", "-", "-", null, 5),
 }
 
-module.exports.Weapon = Weapon;
+module.exports.Weapon = Weapon

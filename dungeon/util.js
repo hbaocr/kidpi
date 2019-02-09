@@ -1,4 +1,37 @@
 const readline = require('readline');
+const fs = require('fs');
+
+readline.emitKeypressEvents(process.stdin);
+let saveCollection = {};
+let game = {};
+process.stdin.setRawMode(true);
+process.stdin.on('keypress', (str, key) => {
+  if (key.ctrl && key.name === 's') {
+    console.log("Save!");
+    console.log("Saving out", saveCollection);
+    fs.writeFile("savedgame.json", JSON.stringify(saveCollection), (err) => {
+      if (err) { console.log("Error in save: ", err); }
+      else {
+        console.log("Saved game.");
+      }
+    });
+  } else if (key.ctrl && key.name === 'l') {
+    fs.readFile("savedgame.json", (err, data) => {
+      if (err) { console.log("Error in load: ", err); }
+      else {
+        let saveGame = JSON.parse(data);
+        for (let prop in saveGame) {
+          game[prop] = saveGame[prop];
+        }
+      }
+    });
+  }
+});
+
+function registerSaveObject(property, gameRef) {
+  game = gameRef;
+  saveCollection[property] = game[property];
+}
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -35,6 +68,7 @@ function hitCheck(speedAttack, speedDefend) {
 
 
 module.exports = {
+  registerSaveObject: registerSaveObject,
   getRandomProp : getRandomProp,
   getRandom: getRandom,
   getOppositeDirection: getOppositeDirection,

@@ -125,12 +125,12 @@ class Adventurer {
             },
             "Chronomancer": () => {
               this.wizardType = "time",
-              this.spells[0] = new Spell("Timetear", Spell.types.damaging, 4, 3, 5);
+              this.spells[0] = new Spell("Timetear", Spell.types.damaging, 4, 3, 6);
               this.nextQuestion();
             },
             "Necromancer": () => {
               this.wizardType = "death",
-              this.spells[0] = new Spell("Rot", Spell.types.damaging, 5, 3, 3);
+              this.spells[0] = new Spell("Rot", Spell.types.damaging, 5, 3, 5);
               this.nextQuestion();
             },
           }
@@ -284,7 +284,7 @@ class Adventurer {
           let pickIndex = answer - 0;
           if (pickIndex >= this.spells.length + 1) {
             console.log("You don't have that many spells! Please try again.  Or enter 0 to cancel.");
-            setTimeout((cb) =>  { this.buildSpellsMenu(cb); }, 2000);
+            setTimeout(() =>  { this.buildSpellsMenu(cb); }, 2000);
           } else if (answer == "0") {
             cb(null);
           } else {
@@ -321,7 +321,7 @@ class Adventurer {
         let pickIndex = answer - 0;
         if (pickIndex >= spellsForMenu.length + 1) {
           console.log("You don't have that many spells! Please try again.  Or enter 0 to cancel.");
-          setTimeout((cb) =>  { this.buildSpellsMenu(cb); }, 2000);
+          setTimeout(() =>  { this.buildSpellsMenu(cb); }, 2000);
         } else if (answer == "0") {
           cb(null);
         } else {

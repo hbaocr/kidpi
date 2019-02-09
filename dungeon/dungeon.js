@@ -7,7 +7,7 @@ class Dungeon {
     this.name= "unset";
     this.type = "unset";
     this.rooms = [];
-    this.roomFactor = 10;
+    this.roomFactor = 20;
     this.roomGrid = [];
     for (let i = 0; i < this.roomFactor; i++) { this.roomGrid[i] = []; this.roomGrid[i].length = this.roomFactor; }
 

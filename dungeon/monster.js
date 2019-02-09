@@ -55,6 +55,8 @@ class Monster {
         loot = new Armor().create(lootItemOption);
       } else if (lootItemOption instanceof Weapon) {
         loot = new Weapon().create(lootItemOption);
+      } else if (lootItemOption instanceof Potion) {
+        loot = new Potion().create(lootItemOption);
       } else if (lootItemOption instanceof Scroll) {
         loot = new Scroll().create(lootItemOption);
       }
@@ -69,6 +71,12 @@ class Monster {
 Monster.lootClass = {
   "junk" : [
     Armor.options.snot_helm,
+    Armor.options.snot_helm,
+    Armor.options.snot_jerkin,
+    Armor.options.snot_pants,
+    Armor.options.snot_gloves,
+    Armor.options.snot_boots,
+    Weapon.options.snot_whip,
     Armor.options.snot_jerkin,
     Armor.options.snot_pants,
     Armor.options.snot_gloves,
@@ -76,11 +84,14 @@ Monster.lootClass = {
     Weapon.options.snot_whip,
     Weapon.options.rusty_dagger,
     Weapon.options.bucket,
+    Weapon.options.bucket,
+    Weapon.options.rock,
+    Weapon.options.rock,
+    Weapon.options.rock,
     Weapon.options.rock,
     Weapon.options.really_rusty_sword,
-    Scroll.options.snot_storm,
-    Scroll.options.snot_storm,
-    Scroll.options.snot_storm,
+    Weapon.options.really_rusty_sword,
+    Weapon.options.really_rusty_sword,
     Scroll.options.snot_storm,
   ],
   "low" : [
@@ -134,6 +145,11 @@ Monster.lootClass = {
   ],
   "mid" : [
     Armor.options.iron_helm,
+    Armor.options.iron_helm,
+    Armor.options.iron_chestplate,
+    Armor.options.iron_pants,
+    Armor.options.iron_gauntlets,
+    Armor.options.iron_boots,
     Armor.options.iron_chestplate,
     Armor.options.iron_pants,
     Armor.options.iron_gauntlets,
@@ -239,6 +255,9 @@ Monster.lootClass = {
   "oneofakind" : [
   ],
   "hippie" : [
+    Weapon.options.cultist_dagger,
+    Scroll.options.rainbow_swirl,
+    Weapon.options.extremely_stale_fruitcake,
   ],
 }
 
@@ -404,6 +423,46 @@ Monster.monster_options = {
     manaPerTurn : 0,
     lootClass: "hippie",
     weapons : [new Weapon("cultist dagger", "stabby", "-", "-", null, 3)]
+  },
+  gargantuan_slime: {
+    name:"gargantuan slime",
+    health : 20,
+    armor : 3,
+    strength : 3,
+    speed : 4,
+    manaPerTurn : 0,
+    lootClass: "high",
+    weapons : [new Weapon("wall of snot", "acid", "-", "-", null, 4)]
+  },
+  intellegent_slime: {
+    name:"intellegent slime",
+    health : 8,
+    armor : 3,
+    strength : 2,
+    speed : 6,
+    manaPerTurn : 0,
+    lootClass: "mid",
+    weapons : [new Weapon("magical snot", "acid", "-", "-", null, 3)]
+  },
+  big_fat_rat: {
+    name:"big fat rat",
+    health : 6,
+    armor : 1,
+    strength : 2,
+    speed : 4,
+    manaPerTurn : 0,
+    lootClass: "junk",
+    weapons : [new Weapon("fireball", "burny", "-", "-", null, 5)]
+  },
+  imp: {
+    name:"imp",
+    health : 5,
+    armor : 1,
+    strength : 3,
+    speed : 4,
+    manaPerTurn : 0,
+    lootClass: "mid",
+    weapons : [new Weapon("fireball", "burny", "-", "-", null, 5)]
   },
 }
 
