@@ -6,15 +6,16 @@ class WeaponParts {
     this.quiver = null;
     this.health = 10;
     this.hasMagic = false;
-    this.buff = null;
+    this.buffs = null;
   }
 }
 
 class Weapon {
-  constructor(name, type, left, right, quiver, damage) {
+  constructor(name, type, left, right, quiver, damage, buffs) {
     this.name = name;
     this.type = type;
     this.damage = damage;
+    this.buffs = [];
     this.parts = new WeaponParts();
     this.parts.leftHand = left;
     this.parts.rightHand = right;
@@ -78,7 +79,7 @@ Weapon.options = {
   massive_rock: new Weapon("massive cudgle", "blunt", "-", "-", null, 6),
   fiery_longsword: new Weapon("fiery logsword", "slashing", "-", "-", null, 8),
   demonclaw_dagger: new Weapon("demonclaw dagger", "stabby", "-", "-", null, 9),
-  cultist_dagger: new Weapon("cultist dagger", "stabby", "-", "-", null, 5),
+  cultist_dagger: new Weapon("cultist dagger", "stabby", "-", "-", null, 5, {"speed":3}),
 }
 
 module.exports.Weapon = Weapon

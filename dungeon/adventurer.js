@@ -150,9 +150,25 @@ class Adventurer {
     // Check to see if we hit.
     setTimeout(() => {
       for (let i = 0; i < this.weapons.length; i++) {
-        if (Util.hitCheck((spell ? spell.focus : this.speed), this.fighting.speed)) {
+        let strength = this.strength;
+        let speed = (spell ? spell.focus : this.speed);
+        if (this.weapons[0].buffs) {
+          if (this.weapons[0].buffs["speed"]) {
+            speed += this.weapons[0].buffs["speed"];
+          } else if (this.weapons[1] && this.weapons[1].buffs["speed"]) {
+            speed += this.weapons[0].buffs["speed"];
+          }
+
+          if (this.weapons[0].buffs["strength"]) {
+            strength += this.weapons[0].buffs["strength"];
+          } else if (this.weapons[1] && this.weapons[1].buffs["strength"]) {
+            strength += this.weapons[0].buffs["strength"];
+          }
+        }
+
+        if (Util.hitCheck(speed, this.fighting.speed)) {
           console.log("\n\n\nHit!!");
-          let strengthMod = (Math.floor(Math.random() * this.strength));
+          let strengthMod = (Math.floor(Math.random() * strength));
 
           if (strengthMod <= 0) strengthMod = 1;
 
