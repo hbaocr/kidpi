@@ -95,6 +95,10 @@ Monster.lootClass = {
     Scroll.options.snot_storm,
   ],
   "low" : [
+    Potion.options.crab_meat,
+    Potion.options.crab_meat,
+    Potion.options.crab_meat,
+    Potion.options.crab_meat,
     Armor.options.leather_helm,
     Armor.options.leather_jerkin,
     Armor.options.leather_pants,
@@ -259,6 +263,11 @@ Monster.lootClass = {
     Scroll.options.rainbow_swirl,
     Weapon.options.extremely_stale_fruitcake,
   ],
+  "alien" : [
+  ],
+  "crab" : [
+    Potion.options.crab_meat,
+  ],
 }
 
 Monster.monster_options = {
@@ -286,8 +295,8 @@ Monster.monster_options = {
     name:"slime swarm",
     health: 5,
     armor : 1,
-    strength : 1,
-    speed : 4,
+    strength : 2,
+    speed : 3,
     manaPerTurn : 0,
     lootClass: "junk",
     weapons : [new Weapon("snot storm", "acid", "-", "-", null, 1)]
@@ -449,10 +458,40 @@ Monster.monster_options = {
     health : 6,
     armor : 1,
     strength : 2,
-    speed : 4,
+    speed : 2,
     manaPerTurn : 0,
     lootClass: "junk",
     weapons : [new Weapon("fireball", "burny", "-", "-", null, 5)]
+  },
+  imp: {
+    name:"imp",
+    health : 5,
+    armor : 1,
+    strength : 3,
+    speed : 4,
+    manaPerTurn : 0,
+    lootClass: "mid",
+    weapons : [new Weapon("fireball", "burny", "-", "-", null, 5)]
+  },
+  outsider: {
+    name:"outsider",
+    health : 5,
+    armor : 0,
+    strength : 5,
+    speed : 5,
+    manaPerTurn : 0,
+    lootClass: "alien",
+    weapons : [new Weapon("morphing limbs", "stabby", "-", "-", null, 3)]
+  },
+  cave_crab: {
+    name:"cave crab",
+    health : 1,
+    armor : 1,
+    strength : 1,
+    speed : 2,
+    manaPerTurn : 0,
+    lootClass: "crab",
+    weapons : [new Weapon("pincers", "stabby", "-", "-", null, 2)]
   },
   imp: {
     name:"imp",

@@ -87,9 +87,9 @@ class Adventurer {
             "Fighter": (value) => {
               this.type = value;
               this.armor = 3;
-              this.baseArmor = 3;
+              this.baseArmor = 2;
               this.strength = 4;
-              this.speed = 2;
+              this.speed = 3;
               this.mana = 0;
               this.weapons[0] = new Weapon("fists", "blunt", "-", "-", null, 1);
               this.weapons[1] = new Weapon("fists", "blunt", "-", "-", null, 1);
