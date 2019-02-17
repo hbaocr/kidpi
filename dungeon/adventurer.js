@@ -455,7 +455,6 @@ class Adventurer {
   }
 
   handleBuffingSpell(spell, cb) {
-    console.log("Spell:", spell);
     for (let prop in spell.buffs) {
       if (prop == "duration") continue;
       this[prop] += spell.buffs[prop];

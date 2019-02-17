@@ -10,7 +10,7 @@ class Scroll extends Spell {
   description() {
     let desc = "";
     let targets = this.getTarget();
-    desc = `${this.name} is a ${this.type} of scroll.  It does ${this.effect} on ${targets}`;
+    desc = `${this.name} is a ${this.type} scroll.  It does ${this.effect} on ${targets}`;
     return desc;
   }
 
@@ -48,7 +48,7 @@ class Potion extends Scroll {
   description() {
     let desc = "";
     let targets = this.getTarget();
-    desc = `${this.name} is a ${this.type} of potion.  It does ${this.effect} on ${targets}`;
+    desc = `${this.name} is a ${this.type} potion.  It does ${this.effect} on ${targets}`;
     return desc;
   }
 
