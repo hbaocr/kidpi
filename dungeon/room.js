@@ -71,6 +71,17 @@ class Room {
     return this.loot.length != 0;
   }
 
+  hasChest() {
+    for (let i = 0; i < this.stuff.length; i++) {
+      let curStuff = this.stuff[i];
+      console.log("Room has: ", curStuff);
+      if (curStuff == Room.stuff_options.chest) {
+        //This rooom has a chest.
+        return true;
+      }
+    }
+  }
+
   describe() {
     let desc = "The room is " + this.attributes[0].attr;
     if (this.monsters.length) {

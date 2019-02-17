@@ -493,6 +493,16 @@ Monster.monster_options = {
     lootClass: "crab",
     weapons : [new Weapon("pincers", "stabby", "-", "-", null, 2)]
   },
+  Snoop_Dog: {
+    name:"Snoop Dog",
+    health : 6,
+    armor : 2,
+    strength : 2,
+    speed : 6,
+    manaPerTurn : 0,
+    lootClass: "hippie",
+    weapons : [new Weapon("lighter", "burny", "-", "-", null, 5)]
+  },
   imp: {
     name:"imp",
     health : 5,

@@ -36,6 +36,7 @@ class Game {
       {name: "Go west", viable: () => {return this.player.curRoom.hasWest();}, action: () => { this.goWest() }},
       {name: "Go Up", viable: () => {return this.player.curRoom.hasUp();}, action: () => { this.goUp() }},
       {name: "Go Down", viable: () => {return this.player.curRoom.hasDown();}, action: () => { this.goDown() }},
+      {name: "Loot Chest", viable: () => {return this.player.curRoom.hasChest();}, action: (cb) => { this.player.lootChest(cb); return true; }},
       {name: "Inventory", viable: () => {return this.player.backpack.length > 0;}, action: (cb) => { this.player.inspectBackpack(cb); return true; }},
     ];
 

@@ -4,6 +4,7 @@ var Spell = require('./spells.js').Spell;
 var Armor = require('./armor.js').Armor;
 var Scroll = require('./potion.js').Scroll;
 var Potion = require('./potion.js').Potion;
+var Room = require('./room.js').Room;
 
 class Adventurer {
   constructor(game) {
@@ -480,12 +481,16 @@ class Adventurer {
     cb();
   }
 
+  enteredRoom() {
+    this.curRoom.describe();
+    this.curRoom.visited = true;
+  }
+
   goNorth() {
     if (this.curRoom.hasNorth()) {
       this.prevRoom = this.curRoom;
       this.curRoom = this.curRoom.directions.north;
-      this.curRoom.describe();
-      this.curRoom.visited = true;
+      this.enteredRoom();
     } else {
       console.log("You have hit your nose on a wall.  But why?");
     }
@@ -495,8 +500,7 @@ class Adventurer {
     if (this.curRoom.hasSouth()) {
       this.prevRoom = this.curRoom;
       this.curRoom = this.curRoom.directions.south;
-      this.curRoom.describe();
-      this.curRoom.visited = true;
+      this.enteredRoom();
     } else {
       console.log("You have hit your nose on a wall.  But why?");
     }
@@ -506,9 +510,7 @@ class Adventurer {
     if (this.curRoom.hasEast()) {
       this.prevRoom = this.curRoom;
       this.curRoom = this.curRoom.directions.east;
-      this.curRoom.describe();
-      this.curRoom.visited = true;
-      console.log("Current room object: ", this.curRoom.x, this.curRoom.y);
+      this.enteredRoom();
     } else {
       console.log("You have hit your nose on a wall.  But why?");
     }
@@ -518,12 +520,28 @@ class Adventurer {
     if (this.curRoom.hasWest) {
       this.prevRoom = this.curRoom;
       this.curRoom = this.curRoom.directions.west;
-      this.curRoom.describe();
-      this.curRoom.visited = true;
+      this.enteredRoom();
       console.log("Current room object: ", this.curRoom.x, this.curRoom.y);
     } else {
       console.log("You have hit your nose on a wall.  But why?");
     }
+  }
+
+  lootChest() {
+    let lootClass = Monster.lootClass.alien;
+    while(lootClass == Monster.lootClass.alien) {
+      lootClass = Util.randomProp(Monster.lootClass);
+    }
+
+    let loot = Util.getRandom(Monster.lootClass[lootClass]);
+
+    for (let i = 0; i < this.curRoom.stuff.length; i++) {
+      if (this.curRoom.stuff[i].type == "chest") {
+        this.curRoom.stuff = this.curRoom.stuff.splice(i,1);
+      }
+    }
+
+    this.room.stuff.push(loot);
   }
 
   nameAccepted(name) {
