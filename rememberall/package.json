@@ -10,7 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "request": "^2.87.0",
-    "rpi-gpio": "^1.0.0",
     "twilio": "^3.18.0"
   }
 }

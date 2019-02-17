@@ -101,12 +101,6 @@ function sendSMS(body) {
   });
 }
 
-var gpio = require('rpi-gpio');
-var waterPin = 36;
-console.log("Setting up pin...");
-gpio.setup(waterPin, gpio.DIR_OUT, (err) => {
-  console.log("Done with setup...", err);
-});
 
 function exitHandler(ex) {
   console.log("Whoops:", ex);
