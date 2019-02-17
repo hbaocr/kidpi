@@ -18,7 +18,7 @@ class Scroll extends Spell {
     console.log(this.description());
   }
 
-  create(whichOption) {
+  static create(whichOption) {
     let scroll = new Scroll (
       whichOption.name,
       whichOption.type,
@@ -56,7 +56,7 @@ class Potion extends Scroll {
     console.log(this.description());
   }
 
-  create(whichOption) {
+  static create(whichOption) {
     let potion = new Potion(
       whichOption.name,
       whichOption.type,

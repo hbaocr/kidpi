@@ -28,7 +28,7 @@ class Room {
     this.name = Math.floor(Math.random() * 1000000);
     let monsterChance = Math.random() * 100;
     if (monsterChance <= 60) {
-      this.monsters.push((new Monster()).createRandom());
+      this.monsters.push(Monster.createRandom());
     }
     this.attributes.push(Util.getRandom(Room.attrs));
     this.stuff.push(Util.getRandomProp(Room.stuff_options));

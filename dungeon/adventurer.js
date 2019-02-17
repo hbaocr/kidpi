@@ -106,7 +106,7 @@ class Adventurer {
               this.mana = 0;
               this.weapons[0] = new Weapon("short sword", "stabby", "", "short sword", null, 1);
               this.weapons[1] = new Weapon("short sword", "stabby", "", "short sword", null, 1);
-              this.spells[0] = new Potion().create(Potion.options.good_scotch);
+              this.spells[0] = Potion.create(Potion.options.good_scotch);
               this.nextQuestion();
             }
           }
@@ -537,13 +537,13 @@ class Adventurer {
     let loot = Util.getRandom(lootClass);
 
     for (let i = 0; i < this.curRoom.stuff.length; i++) {
-      if (this.curRoom.stuff[i] == "chest") {
+      if (this.curRoom.stuff[i] == Room.stuff_options.chest) {
         this.curRoom.stuff.splice(i,1);
       }
     }
 
     console.log("Room now has: ", loot);
-    this.curRoom.loot.push(loot);
+    this.curRoom.loot.push(Monster.createLoot(loot));
     cb();
   }
 

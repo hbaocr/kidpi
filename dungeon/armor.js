@@ -8,12 +8,12 @@ class Armor {
   describe() {
   }
 
-  createRandom() {
+  static createRandom() {
     let whichArmor = Util.getRandomProp(Armor.options);
-    return this.create(whichArmor);
+    return Armor.create(whichArmor);
   }
 
-  create(whichOption) {
+  static create(whichOption) {
     let armor = new Armor (
       whichOption.name,
       whichOption.type,

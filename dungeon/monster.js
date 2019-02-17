@@ -17,12 +17,12 @@ class Monster {
     this.hasLoot = false;
   }
 
-  createRandom() {
+  static createRandom() {
     let whichMonster = Util.getRandomProp(Monster.monster_options);
-    return this.create(whichMonster);
+    return Monster.create(whichMonster);
   }
 
-  createRandomInRange(low, high) {
+  static createRandomInRange(low, high) {
     let mOptions = [];
     for (let i = 0; i < Monster.byClass.length; i++) {
       let curM = Monster.byClass[i];
@@ -32,10 +32,24 @@ class Monster {
     }
 
     let whichMonster = Util.getRandom(mOptions);
-    return this.create(whichMonster);
+    return Monster.create(whichMonster);
   }
 
-  create(whichOption) {
+  static createLoot(lootItemOption) {
+    let loot = null;
+    if (lootItemOption instanceof Armor) {
+      loot = Armor.create(lootItemOption);
+    } else if (lootItemOption instanceof Weapon) {
+      loot = Weapon.create(lootItemOption);
+    } else if (lootItemOption instanceof Potion) {
+      loot = Potion.create(lootItemOption);
+    } else if (lootItemOption instanceof Scroll) {
+      loot = Scroll.create(lootItemOption);
+    }
+    return loot;
+  }
+
+  static create(whichOption) {
     let monster = new Monster(
       whichOption.name,
       whichOption.health,
@@ -50,18 +64,8 @@ class Monster {
     if (true) {
       monster.hasLoot = true;
       let lootItemOption = Util.getRandom(Monster.lootClass[monster.lootClass]);
-      let loot = null;
-      if (lootItemOption instanceof Armor) {
-        loot = new Armor().create(lootItemOption);
-      } else if (lootItemOption instanceof Weapon) {
-        loot = new Weapon().create(lootItemOption);
-      } else if (lootItemOption instanceof Potion) {
-        loot = new Potion().create(lootItemOption);
-      } else if (lootItemOption instanceof Scroll) {
-        loot = new Scroll().create(lootItemOption);
-      }
 
-      monster.loot = loot;
+      monster.loot = Monster.createLoot(lootItemOption);
     }
 
     return monster;
@@ -517,7 +521,7 @@ Monster.monster_options = {
 
 Monster.byClass = [];
 for (let m in Monster.monster_options) {
-  let curMonster = (new Monster()).create(Monster.monster_options[m]);
+  let curMonster = Monster.create(Monster.monster_options[m]);
   Monster.byClass.push(curMonster);
 }
 

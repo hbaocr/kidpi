@@ -42,12 +42,12 @@ class Weapon {
     console.log(desc);
   }
 
-  createRandom() {
+  static createRandom() {
     let whichWeapon = Util.getRandomProp(Weapon.options);
-    return this.create(whichWeapon);
+    return Weapon.create(whichWeapon);
   }
 
-  create(whichOption) {
+  static create(whichOption) {
     let weapon = new Weapon(
       whichOption.name,
       whichOption.type,

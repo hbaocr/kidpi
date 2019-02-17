@@ -106,7 +106,7 @@ class Dungeon {
           }
 
           try {
-          room.monsters[0] = (new Monster()).createRandomInRange(classBandLow, classBandHigh);
+          room.monsters[0] = Monster.createRandomInRange(classBandLow, classBandHigh);
           } catch(ex) {
             console.log("Failed to create monster in range: ", classBandLow, classBandHigh, ex);
           }
