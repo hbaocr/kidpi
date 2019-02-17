@@ -5,6 +5,7 @@ var Armor = require('./armor.js').Armor;
 var Scroll = require('./potion.js').Scroll;
 var Potion = require('./potion.js').Potion;
 var Room = require('./room.js').Room;
+var Monster = require('./monster.js').Monster;
 
 class Adventurer {
   constructor(game) {
@@ -527,21 +528,23 @@ class Adventurer {
     }
   }
 
-  lootChest() {
+  lootChest(cb) {
     let lootClass = Monster.lootClass.alien;
     while(lootClass == Monster.lootClass.alien) {
-      lootClass = Util.randomProp(Monster.lootClass);
+      lootClass = Util.getRandomProp(Monster.lootClass);
     }
 
-    let loot = Util.getRandom(Monster.lootClass[lootClass]);
+    let loot = Util.getRandom(lootClass);
 
     for (let i = 0; i < this.curRoom.stuff.length; i++) {
-      if (this.curRoom.stuff[i].type == "chest") {
-        this.curRoom.stuff = this.curRoom.stuff.splice(i,1);
+      if (this.curRoom.stuff[i] == "chest") {
+        this.curRoom.stuff.splice(i,1);
       }
     }
 
-    this.room.stuff.push(loot);
+    console.log("Room now has: ", loot);
+    this.curRoom.loot.push(loot);
+    cb();
   }
 
   nameAccepted(name) {

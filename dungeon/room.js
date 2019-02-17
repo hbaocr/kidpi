@@ -74,7 +74,6 @@ class Room {
   hasChest() {
     for (let i = 0; i < this.stuff.length; i++) {
       let curStuff = this.stuff[i];
-      console.log("Room has: ", curStuff);
       if (curStuff == Room.stuff_options.chest) {
         //This rooom has a chest.
         return true;
