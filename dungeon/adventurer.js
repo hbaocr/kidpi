@@ -272,6 +272,7 @@ class Adventurer {
           console.log(`${this.fighting.name} drops ${this.fighting.loot.name}`);
           this.curRoom.loot.push(this.fighting.loot);
         }
+        this.fighting = null;
         setTimeout(() => { cb(); }, 3000);
       } else {
         setTimeout(() => {
@@ -533,7 +534,7 @@ class Adventurer {
       lootClass = Util.getRandomProp(Monster.lootClass);
     }
 
-    let loot = Util.getRandom(lootClass);
+    let loot = Util.getRandom(Monster.lootClass[lootClass]);
 
     for (let i = 0; i < this.curRoom.stuff.length; i++) {
       if (this.curRoom.stuff[i] == Room.stuff_options.chest) {
