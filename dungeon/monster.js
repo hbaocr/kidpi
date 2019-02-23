@@ -3,6 +3,7 @@ var Weapon = require('./weapon.js').Weapon;
 var Armor = require('./armor.js').Armor;
 var Scroll = require('./potion.js').Scroll;
 var Potion = require('./potion.js').Potion;
+var Food = require('./potion.js').Food;
 
 class Monster {
   constructor(name, health, armor, strength, speed, lootClass, weapons) {
@@ -41,6 +42,8 @@ class Monster {
       loot = Armor.create(lootItemOption);
     } else if (lootItemOption instanceof Weapon) {
       loot = Weapon.create(lootItemOption);
+    } else if (lootItemOption instanceof Food) {
+      loot = Food.create(lootItemOption);
     } else if (lootItemOption instanceof Potion) {
       loot = Potion.create(lootItemOption);
     } else if (lootItemOption instanceof Scroll) {
@@ -99,10 +102,8 @@ Monster.lootClass = {
     Scroll.options.snot_storm,
   ],
   "low" : [
-    Potion.options.crab_meat,
-    Potion.options.crab_meat,
-    Potion.options.crab_meat,
-    Potion.options.crab_meat,
+    Food.options.crab_meat,
+    Food.options.crab_meat,
     Armor.options.leather_helm,
     Armor.options.leather_jerkin,
     Armor.options.leather_pants,
@@ -270,7 +271,7 @@ Monster.lootClass = {
   "alien" : [
   ],
   "crab" : [
-    Potion.options.crab_meat,
+    Food.options.crab_meat,
   ],
 }
 
@@ -496,16 +497,6 @@ Monster.monster_options = {
     manaPerTurn : 0,
     lootClass: "crab",
     weapons : [new Weapon("pincers", "stabby", "-", "-", null, 2)]
-  },
-  imp: {
-    name:"imp",
-    health : 5,
-    armor : 1,
-    strength : 3,
-    speed : 4,
-    manaPerTurn : 0,
-    lootClass: "mid",
-    weapons : [new Weapon("fireball", "burny", "-", "-", null, 5)]
   },
 }
 

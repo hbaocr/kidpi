@@ -4,6 +4,7 @@ var Spell = require('./spells.js').Spell;
 var Armor = require('./armor.js').Armor;
 var Scroll = require('./potion.js').Scroll;
 var Potion = require('./potion.js').Potion;
+var Food = require('./potion.js').Food;
 var Room = require('./room.js').Room;
 var Monster = require('./monster.js').Monster;
 
@@ -25,6 +26,7 @@ class Adventurer {
 
     this.armorPieces = [];
     this.weapons = [];
+    this.food = [];
     this.spells = [];
     this.backpack = [];
 
@@ -282,6 +284,50 @@ class Adventurer {
     });
   }
 
+  buildFoodMenu(cb) {
+    if (this.food.length > 1) {
+      console.log("Which food would you like to eat?");
+      for (let i = 0; i < this.food.length; i++) {
+        console.log((i + 1) + ": " + this.food[i].description());
+      }
+
+      Util.rl.question('\n\n>>', (answer) => {
+        let pickIndex = answer - 0;
+        if (pickIndex >= this.food.length + 1) {
+          console.log("You don't have that much food! Please try again.  Or enter 0 to cancel.");
+          setTimeout(() =>  { this.buildFoodMenu(cb); }, 2000);
+        } else if (answer == "0") {
+          cb(null);
+        } else {
+          cb(this.food[pickIndex - 1]);
+        }
+      });
+    } else {
+      // If there is only one spell... just use it.
+      cb(this.food[0]);
+    }
+  }
+
+  eat(cb) {
+    this.buildFoodMenu((food) => {
+      if (food == null) {
+        cb();
+        return;
+      }
+
+      this.handleHealingSpell(food, cb)
+      this.health += food.effect;
+      console.log(`You have been healed for ${food.effect} health!`);
+      for (let i = 0; i < this.food.length; i++) {
+        if (this.food[i] == food) {
+          this.food.splice(i,1);
+        }
+      }
+      cb();
+      return;
+    });
+  }
+
   buildSpellsMenu(cb) {
     let spellTypes = {};
     // Get each class of spells.
@@ -531,10 +577,11 @@ class Adventurer {
   lootChest(cb) {
     let lootClass = Monster.lootClass.alien;
     while(lootClass == Monster.lootClass.alien) {
+      // This returns the collection of loot items as an array.
       lootClass = Util.getRandomProp(Monster.lootClass);
     }
 
-    let loot = Util.getRandom(Monster.lootClass[lootClass]);
+    let loot = Util.getRandom(lootClass);
 
     for (let i = 0; i < this.curRoom.stuff.length; i++) {
       if (this.curRoom.stuff[i] == Room.stuff_options.chest) {
@@ -652,7 +699,11 @@ class Adventurer {
     if ((loot instanceof Scroll) || (loot instanceof Potion)) {
       console.log("You picked up: ");
       loot.describe();
-      this.spells.push(loot);
+      if (loot instanceof Food) {
+        this.food.push(loot);
+      } else {
+        this.spells.push(loot);
+      }
     }
 
     this.updateStats();

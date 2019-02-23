@@ -30,6 +30,7 @@ class Game {
       {name: "Inspect", action: () => { this.player.curRoom.describe(); }},
       {name: "Pickup", viable: () => {return this.player.curRoom.hasLoot();}, action: (cb) => { return this.getLoot(cb); }},
       {name: "Cast", viable: () => { return this.player.spells.length > 0; }, action: (cb) => { this.handleSpell(cb); return true; }},
+      {name: "Eat", viable: () => { return this.player.food.length > 0; }, action: (cb) => { this.handleFood(cb); return true; }},
       {name: "Go north", viable: () => {return this.player.curRoom.hasNorth();}, action: () => { this.goNorth() }},
       {name: "Go south", viable: () => {return this.player.curRoom.hasSouth();}, action: () => { this.goSouth() }},
       {name: "Go east", viable: () => {return this.player.curRoom.hasEast();}, action: () => { this.goEast() }},
@@ -150,6 +151,12 @@ class Game {
 
   handleSpell(cb) {
     this.player.cast(() => {
+      cb();
+    });
+  }
+
+  handleFood(cb) {
+    this.player.eat(() => {
       cb();
     });
   }

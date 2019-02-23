@@ -103,11 +103,13 @@ class Room {
 Room.stuff_options = {
   shelf: "shelf",
   chest: "chest",
+  /*
   bed: "bed",
   statue: "statue",
   pool: "pool",
   mushrooms: "mushrooms",
   stalagtites: "stalagtites"
+  */
 }
 
 

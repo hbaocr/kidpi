@@ -76,10 +76,47 @@ Potion.options = {
   blue_heal: new Potion("blue heal", Spell.types.healing, 5, 10),
   pink_heal: new Potion("pink heal", Spell.types.healing, 10,10),
   red_heal: new Potion("red heal", Spell.types.healing, 20,10),
-  crab_meat: new Potion("crab meat", Spell.types.healing, 2,10),
   good_scotch: new Potion("good scotch", Spell.types.buffing, 10,10, {"strength":3,"speed":2, duration:Spell.durations.life}),
   the_flash: new Potion("the flash", Spell.types.buffing, 10,10, {"speed":3, duration:Spell.durations.life}),
 }
 
+class Food extends Potion {
+  constructor(name, type, effect, focus, buffs) {
+    super(name, type, effect, focus, buffs);
+    this.isPotion = true;
+    this.buffs = buffs;
+  }
+
+  description() {
+    let desc = "";
+    desc = `${this.name} is a ${this.type} food.  It heals ${this.effect} health`;
+    return desc;
+  }
+
+  describe() {
+    console.log(this.description());
+  }
+
+  static create(whichOption) {
+    let food = new Food(
+      whichOption.name,
+      whichOption.type,
+      whichOption.effect,
+      whichOption.focus,
+      whichOption.buffs,
+    );
+    return food;
+  }
+}
+
+Food.types = Spell.types;
+
+Food.options = {
+  crab_meat: new Food("crab meat", Spell.types.healing, 2,10),
+  turkey_leg: new Food("crab meat", Spell.types.healing, 2,10),
+  good_scotch: new Food("good scotch", Spell.types.buffing, 10,10, {"strength":3,"speed":2, duration:Spell.durations.life}),
+}
+
+module.exports.Food = Food;
 module.exports.Potion = Potion;
 module.exports.Scroll = Scroll;
