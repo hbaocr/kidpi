@@ -26,7 +26,6 @@ class Dungeon {
 
     this.lastRoomX = Math.floor(this.roomFactor/2 + (Math.random() * (this.roomFactor/2)));
     this.lastRoomY = Math.floor(this.roomFactor/2 + (Math.random() * (this.roomFactor/2)));
-    console.log("Boss room is at: ", this.lastRoomX, this.lastRoomY);
 
     while (true) {
       if (buildPosX == this.lastRoomX && buildPosY == this.lastRoomY) {
@@ -120,7 +119,6 @@ class Dungeon {
         prevRoom = room;
       }
     }
-    this.drawMap();
   }
 
   drawMap() {

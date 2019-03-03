@@ -590,7 +590,7 @@ class Adventurer {
     }
 
     let loot = Util.getRandom(lootClass);
-    console.log("Loot class of chest:", loot, lootClass)
+    //console.log("Loot class of chest:", loot, lootClass)
 
     for (let i = 0; i < this.curRoom.stuff.length; i++) {
       if (this.curRoom.stuff[i] == Room.stuff_options.chest) {

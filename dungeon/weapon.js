@@ -80,6 +80,7 @@ Weapon.options = {
   fiery_longsword: new Weapon("fiery logsword", "slashing", "-", "-", null, 8),
   demonclaw_dagger: new Weapon("demonclaw dagger", "stabby", "-", "-", null, 9),
   cultist_dagger: new Weapon("cultist dagger", "stabby", "-", "-", null, 5, {"speed":3}),
+  cultist_sword: new Weapon("cultist sword", "stabby", "-", "-", null, 5, {"speed":5}),
 }
 
 module.exports.Weapon = Weapon
