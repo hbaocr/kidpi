@@ -640,7 +640,6 @@ class Adventurer {
     }
 
     if (this.curBuildQuestion < this.buildQuestions.length) {
-      console.log("Next question....");
       let curQuestion = this.buildQuestions[this.curBuildQuestion];
       if (curQuestion.viable && !curQuestion.viable()) {
         this.curBuildQuestion++;

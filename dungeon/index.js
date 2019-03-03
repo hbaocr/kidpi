@@ -64,7 +64,6 @@ class Game {
   }
 
   buildCore() {
-    console.log("I see you would like to become a Core!!!");
     this.core = new DungeonCore(this);
     this.core.buildSurvey(() => {
       console.log("You are done building your core!!  Onward!!");
@@ -73,7 +72,6 @@ class Game {
   }
 
   buildAdventurer() {
-    console.log("I see you would like to become an Adventurer!!!");
     this.adventurer = new Adventurer(this);
     this.adventurer.buildSurvey(() => {
       console.log("You are done building your Adventurer!!  Onward!!");
@@ -287,7 +285,8 @@ out();
 out("Long ago, an evil king hoarded treasure while his people starved.  A traveling wizard from a far away land");
 out("heard the king's peoples cry and witnessed their suffering.  The wizard cursed the king and turned him into a ");
 out("dragon that cannot taste the food he kept from his people, nor ever fully rest like his slaves.");
-out("The dragon flew away - but not without taking as much of his hoard as he could carry.  It is rumored, this is ");
+out();
+out("The dragon flew away - but not without taking as much of his hoard as he could carry.  Rumor has it, this is ");
 out("his cave.  ");
 out("");
 out("The people elected a new king, and have saught far and wide to find an adventurer that could return the kings ");
