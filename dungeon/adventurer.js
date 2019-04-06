@@ -185,7 +185,7 @@ class Adventurer {
             armorSave = 0;
           }
 
-          console.log(`Damage before armor save: ${damage}, armor save: ${armorSave}`);
+          //console.log(`Damage before armor save: ${damage}, armor save: ${armorSave}`);
           damage = damage - armorSave;
 
           if (damage < 0) {
@@ -193,13 +193,21 @@ class Adventurer {
           }
 
           if (damage <= 0) {
-            console.log("\nYour blow is deflected by the monsters armor!");
+            if (armorSave > 0) {
+              console.log("\nYour blow is deflected by the monsters armor!");
+            } else {
+              console.log("\nYou missed!");
+            }
           } else {
             console.log("\nIt does " + damage + " damage to " + this.fighting.name);
           }
 
           this.fighting.health -= damage;
-          console.log(this.fighting.name + " has " + this.fighting.health + " health left!");
+          if (this.fighting.health > 0) {
+            console.log(this.fighting.name + " has " + this.fighting.health + " health left!");
+          } else {
+            console.log(this.fighting.name + " is dead!");
+          }
         } else {
           console.log("\n\n\nOh no! You missed!!");
           console.log(this.fighting.name + " has " + this.fighting.health + " health left!");
@@ -582,6 +590,7 @@ class Adventurer {
     }
 
     let loot = Util.getRandom(lootClass);
+    //console.log("Loot class of chest:", loot, lootClass)
 
     for (let i = 0; i < this.curRoom.stuff.length; i++) {
       if (this.curRoom.stuff[i] == Room.stuff_options.chest) {
@@ -589,6 +598,9 @@ class Adventurer {
       }
     }
 
+    if (!loot) {
+      throw new Exception("Loot was undefined.");
+    }
     console.log("Room now has: ", loot);
     this.curRoom.loot.push(Monster.createLoot(loot));
     cb();
@@ -628,7 +640,6 @@ class Adventurer {
     }
 
     if (this.curBuildQuestion < this.buildQuestions.length) {
-      console.log("Next question....");
       let curQuestion = this.buildQuestions[this.curBuildQuestion];
       if (curQuestion.viable && !curQuestion.viable()) {
         this.curBuildQuestion++;

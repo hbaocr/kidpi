@@ -23,7 +23,6 @@ class Game {
       {name: "Build room", action: () => { this.buildRoom() }},
       {name: "Build trap", action: () => { this.buildTrap() }},
       {name: "Create Monster", action: () => { this.buildMonster() }},
-      {name: "View Map", action: () => { this.showMap() }},
     ];
 
     this.adventurerOptions = [
@@ -65,7 +64,6 @@ class Game {
   }
 
   buildCore() {
-    console.log("I see you would like to become a Core!!!");
     this.core = new DungeonCore(this);
     this.core.buildSurvey(() => {
       console.log("You are done building your core!!  Onward!!");
@@ -74,7 +72,6 @@ class Game {
   }
 
   buildAdventurer() {
-    console.log("I see you would like to become an Adventurer!!!");
     this.adventurer = new Adventurer(this);
     this.adventurer.buildSurvey(() => {
       console.log("You are done building your Adventurer!!  Onward!!");
@@ -100,11 +97,6 @@ class Game {
 
   buildMonster() {
     console.log("I see you would like to build a monster!");
-  }
-
-  showMap() {
-    console.log("This is you: ---><---XXX----<>");
-    this.turn--;
   }
 
   addManaCheck() {
@@ -236,6 +228,7 @@ class Game {
     if (this.player.curRoom.hasMonster() && !this.player.fighting) {
       console.log(`This room contains a ${this.player.curRoom.monsters[0].name}!`);
     }
+
     this.dungeon.drawMap();
 
     options = this.adventurerOptions;
@@ -289,8 +282,21 @@ out();
 out("                                     Welcome to a grand new adventure.");
 out();
 out();
-out("Lets get started...");
+out("Long ago, an evil king hoarded treasure while his people starved.  A traveling wizard from a far away land");
+out("heard the king's peoples cry and witnessed their suffering.  The wizard cursed the king and turned him into a ");
+out("dragon that cannot taste the food he kept from his people, nor ever fully rest like his slaves.");
 out();
+out("The dragon flew away - but not without taking as much of his hoard as he could carry.  Rumor has it, this is ");
+out("his cave.  ");
+out("");
+out("The people elected a new king, and have saught far and wide to find an adventurer that could return the kings ");
+out("crown.  It is said, that crown will ensure the protection of the kingdom from outside forces, better than any");
+out("wall!  The people are desperate to have the crown returned... all other trasures will go to the victor of that");
+out("item.");
+out();
+out("You have taken up their quest.");
+out();
+out("You face the cave.  Many have entered - none have returned.  Good luck adventurer!");
 out("--------------------------------________***************************________--------------------------------");
 
 let game = new Game();

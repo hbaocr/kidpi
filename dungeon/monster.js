@@ -262,6 +262,7 @@ Monster.lootClass = {
     Potion.options.good_scotch,
   ],
   "oneofakind" : [
+    Weapon.options.cultist_sword,
   ],
   "hippie" : [
     Weapon.options.cultist_dagger,

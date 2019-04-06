@@ -26,7 +26,6 @@ class Dungeon {
 
     this.lastRoomX = Math.floor(this.roomFactor/2 + (Math.random() * (this.roomFactor/2)));
     this.lastRoomY = Math.floor(this.roomFactor/2 + (Math.random() * (this.roomFactor/2)));
-    console.log("Boss room is at: ", this.lastRoomX, this.lastRoomY);
 
     while (true) {
       if (buildPosX == this.lastRoomX && buildPosY == this.lastRoomY) {
@@ -120,29 +119,59 @@ class Dungeon {
         prevRoom = room;
       }
     }
-    this.drawMap();
   }
 
   drawMap() {
     for (let i = 0; i < this.roomFactor; i++) {
+      let northDoorRow = "";
       let rowDesc = "";
+      let southDoorRow = "";
       for (let j = 0; j < this.roomFactor; j++) {
         let player = null;
         if (this.game && this.game.player) {
           player = this.game.player;
         }
-        if (player && player.curRoom && this.roomGrid[i][j] == player.curRoom) {
-          rowDesc += "A";
-        } else if (this.roomGrid[i][j] && this.roomGrid[i][j].visited) {
-          rowDesc += "X";
-        } else if (this.roomGrid[i][j]) {
-          rowDesc += "*";
+
+        let curRoom = this.roomGrid[i][j];
+
+        if (curRoom && curRoom.directions.north) {
+          northDoorRow += "-^-";
         } else {
-          rowDesc += ".";
+          northDoorRow += "---";
         }
 
+        if (curRoom && curRoom.directions.west) {
+          rowDesc += "🚪";
+        } else {
+          rowDesc += " ";
+        }
+
+
+        if (player && player.curRoom && curRoom == player.curRoom) {
+          rowDesc += "A";
+        } else if (curRoom && curRoom.visited) {
+          rowDesc += "X";
+        } else if (curRoom) {
+          rowDesc += ".";
+        } else {
+          rowDesc += " ";
+        }
+
+        if (curRoom && curRoom.directions.east) {
+          rowDesc += "";
+        } else {
+          rowDesc += " ";
+        }
+
+        if (curRoom && curRoom.directions.south) {
+          southDoorRow += " | ";
+        } else {
+          southDoorRow += "---";
+        }
       }
+      //console.log(northDoorRow);
       console.log(rowDesc);
+      console.log(southDoorRow);
     }
   }
 
