@@ -33,6 +33,7 @@ class Room {
     this.attributes.push(Util.getRandom(Room.attrs));
     this.stuff.push(Util.getRandomProp(Room.stuff_options));
     // Minimum of one mana per room entry, and up to 11 mana.
+    // Cole was here.
     this.mana = 1 + Math.floor(Math.random() * 10);
   }
 
