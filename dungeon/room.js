@@ -32,7 +32,7 @@ class Room {
     }
     this.attributes.push(Util.getRandom(Room.attrs));
     this.stuff.push(Util.getRandomProp(Room.stuff_options));
-    this.mana = 10 + Math.floor(Math.random() * 10);
+    this.mana = 1 + Math.floor(Math.random() * 10);
   }
 
   hasNorth() {
