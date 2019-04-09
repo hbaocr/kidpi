@@ -1,0 +1,16 @@
+[Unit]
+Description=Run forever check service
+After=network-online.target
+
+[Service]
+WorkingDirectory=/home/pi/kidpi/backupwarning/
+ExecStartPre=killall rec
+ExecStart=/usr/bin/nodejs /home/pi/kidpi/backupwarning/index.js
+StandardOutput=syslog
+User=pi
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+Alias=backup.service
+
