@@ -55,6 +55,7 @@ class Weapon {
       whichOption.parts.rightHand,
       whichOption.parts.quiver,
       whichOption.damage,
+      whichOption.buffs,
     );
     return weapon;
   }
@@ -68,7 +69,7 @@ Weapon.options = {
   spiked_club: new Weapon("spiked club", "blunt", "-", "-", null, 3),
   bow: new Weapon("bow", "bow", "-", "-", 30, 2),
   axe: new Weapon("axe", "slashing", "-", "-", null, 3),
-  heavy_axe: new Weapon("heavy axe", "slashing", "-", "-", null, 4),
+  heavy_axe: new Weapon("heavy axe", "slashing", "-", "-", null, 4,{"speed": -1}),
   great_axe: new Weapon("great axe", "slashing", "-", "-", null, 5),
   short_sword: new Weapon("short sword", "stabby", "", "short sword", null, 3),
   sword: new Weapon("sword", "stabby", "", "sword", null, 4),
