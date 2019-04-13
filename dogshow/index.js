@@ -25,7 +25,7 @@ function startBrowser() {
 
   //DISPLAY=:0 
   process.env['DISPLAY'] = ':0';
-  var chromeParams = ("--incognito --noerrdialogs --kiosk " + currentUrl).split(" ");
+  var chromeParams = ("--incognito --noerrdialogs --start-fullscreen " + currentUrl).split(" ");
   console.log("Chrome: chromium-browser ", chromeParams.join(" "));
   child = spawn('chromium-browser', chromeParams);
   showIsOn = true;
