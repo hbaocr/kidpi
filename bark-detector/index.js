@@ -21,6 +21,7 @@ function startSpawn(recTuning) {
   recParams[7] = recParams.abovePeriodDuration;
   */
 
+  console.log("Recording: rec ", recParams.join(" "));
   child = spawn('rec', recParams);
 
   child.on('close', (code) => {
@@ -58,11 +59,13 @@ function startWork() {
         fs.access(soundsDir + "/" + filename, fs.constants.F_OK, (err) => {
           if (!err) {
             console.log("Got a new bark sound.");
-            fs.unlink(soundsDir + "/" + filename);
+            fs.unlink(soundsDir + "/" + filename, ()=>{});
             gpio.write(waterPin, true, (err) => {
               if (err) {
                 console.log("Error in setting gpio pin.",err);
                 return;
+              } else {
+                console.log("Pin on.");
               }
 
               setTimeout(() => {
@@ -70,6 +73,8 @@ function startWork() {
                   if (err) {
                     console.log("Error in setting gpio pin.",err);
                     return;
+                  } else {
+                    console.log("Pin off.");
                   }
                 });
               }, 1000);
