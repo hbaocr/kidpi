@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "fauxmojs": "^1.0.3",
     "rpi-gpio": "^1.0.0"
   }
 }
