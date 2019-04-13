@@ -2,16 +2,20 @@ const { spawn } = require('child_process');
 const FauxMo = require('fauxmojs');
 const os = require('os');
 const dns = require('dns');
+const http = require('http');
 
 let ipAddress = '';
+
 dns.lookup(os.hostname()+".local", (e,a,f) => { console.log("IP address: ", a, "Errors: ", e); ipAddress = a; });
 
-var fs = require('fs');
-var child = null;
-var isEnabled = true; // Holds the current state from alexa.
+let fs = require('fs');
+let child = null;
+let showIsOn = false; // Holds the current state from alexa.
+//
+let currentUrl = "https://www.youtube.com/embed/9iGoDNlKY-g?list=tLppquNnqg8Yg2FLtBGI1pynHd_kTBfP9N&autoplay=1&loop=1";
 
 //const soundsDir = "/home/pi/kidpi/bark-detector/barks";
-function startBrowser(recTuning) {
+function startBrowser() {
   // Start the soc recorder looking for barks...
   //rec -q mattpiece.wav sinc 1k-2k silence 1 0.1 5% 1 .1 100% : newfile : restart 
   var params
@@ -21,9 +25,10 @@ function startBrowser(recTuning) {
 
   //DISPLAY=:0 
   process.env['DISPLAY'] = ':0';
-  var chromeParams = ("--incognito --noerrdialogs --kiosk https://www.youtube.com/embed/9iGoDNlKY-g?list=tLppquNnqg8Yg2FLtBGI1pynHd_kTBfP9N&autoplay=1&loop=1").split(" ");
+  var chromeParams = ("--incognito --noerrdialogs --kiosk " + currentUrl).split(" ");
   console.log("Chrome: chromium-browser ", chromeParams.join(" "));
   child = spawn('chromium-browser', chromeParams);
+  showIsOn = true;
 }
 
 // Make sure we reboot every 24 hours
@@ -48,6 +53,7 @@ function startWork() {
           } else {
             if ( child != null ) {
               child.kill();
+              showIsOn = false;
             }
           }
         }
@@ -84,6 +90,24 @@ function toggleTVPower() {
     }, 100);
   });
 }
+
+function checkSite() {
+  http.get('http://192.168.1.33/currenturl', (res) => {
+    res.setEncoding('utf8');
+    let rawData = '';
+    res.on('data', (chunk) => { rawData += chunk; });
+    res.on('end', () => {
+      console.log("Current url: ", rawData + "");
+      if (currentUrl != rawData +"") {
+        currentUrl = rawData + "";
+        if (showIsOn) {
+          startBrowser();
+        }
+      }
+    });
+  });
+}
+setInterval(checkSite, 1000);
 
 var gpio = require('rpi-gpio');
 var tvPin = 37;
