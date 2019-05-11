@@ -15,13 +15,14 @@ class RecordProcess extends EventEmitter {
   constructor(pipe) {
     super();
     let args =  [
-      '-c', '1', // 2 channels
-      '-r', '8000', // 44100Hz sample rate
-      '-f', 'S16_LE', // little endian 16 bit
-      '--buffer-size=16384'
+      '-f', 'alsa',
+      '-i', 'plughw:1,0',
+      '-channels','1', 
+      '-f', 'webm',
+      '-'
     ]
-    console.log("Spawning: arecord ", args.join(" "));
-    this.process = spawn('arecord', args);
+    console.log("Spawning: ffmpeg", args.join(" "));
+    this.process = spawn('ffmpeg', args);
     this.process.stdout.pipe(pipe);
 
     this.process.once('exit', (code) => {
@@ -34,9 +35,12 @@ class RecordProcess extends EventEmitter {
 class AplayProcess extends EventEmitter {
   constructor(pipe) {
     super();
-    let args =  [ ]
-    console.log("Spawning: aplay ", args.join(" "));
-    this.process = spawn('aplay', args);
+    let args =  [
+      '-nodisp',
+      '-'
+    ]
+    console.log("Spawning: ffplay", args.join(" "));
+    this.process = spawn('ffplay', args);
     pipe.pipe(this.process.stdin);
 
     this.process.once('exit', (code) => {
