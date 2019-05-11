@@ -1,8 +1,16 @@
-pcm.!default {     
-  capture.pcm "usb_mic"
+pcm.!default {
+  type asym
+  capture.pcm "mic"
+  playback.pcm "speaker"
 }
 
-pcm.usb_mic {
+pcm.mic {
+  type plug
+  slave {
+    pcm "hw:1,0"
+  }
+}
+pcm.speaker {
   type plug
   slave {
     pcm "hw:1,0"
