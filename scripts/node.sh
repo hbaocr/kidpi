@@ -1,15 +1,15 @@
 #! /bin/bash
 
-wget https://nodejs.org/dist/v6.10.1/node-v6.10.1-linux-armv6l.tar.xz
+wget https://nodejs.org/dist/v10.15.3/node-v10.15.3-linux-armv7l.tar.xz
 sleep 5s
 echo "Done pulling tar."
 
-tar xvf node-v6.10.1-linux-armv6l.tar.xz
+tar xvf node-v10.15.3-linux-armv7l.tar.xz
 
 sleep 5s
 echo "Done untar."
 
-cd node-v6.10.1-linux-armv6l
+cd node-v10.15.3-linux-armv7l
 sudo cp -R bin/* /usr/bin/
 
 sleep 5s
