@@ -1,5 +1,5 @@
 {
-  "name": "bark-detector",
+  "name": "dogshow",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,7 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "epoll": "^2.0.9",
     "fauxmojs": "^1.0.3",
-    "rpi-gpio": "^1.0.0"
+    "rpi-gpio": "^2.1.3"
   }
 }
