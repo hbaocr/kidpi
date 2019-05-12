@@ -18,12 +18,21 @@ class RecordProcess extends EventEmitter {
       '-f', 'alsa',
       '-i', 'plughw:1,0',
       '-channels','1', 
+      '-af', 'highpass=f=200, lowpass=f=3000',
+      '-ab', '8k',
+      '-ac', '1',
       '-f', 'webm',
       '-'
     ]
     console.log("Spawning: ffmpeg", args.join(" "));
     this.process = spawn('ffmpeg', args);
     this.process.stdout.pipe(pipe);
+    /*
+    this.process.stderr.on('data', (data) => {
+        console.log(`stderr: ${data}`);
+    });
+    */
+
 
     this.process.once('exit', (code) => {
       console.log("Record process ended.", code);
